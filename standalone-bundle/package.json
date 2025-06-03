@@ -1,0 +1,13 @@
+{
+  "name": "openai-standalone-bundle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone bundle builder for OpenAI SDK",
+  "scripts": {
+    "build": "node build.js",
+    "build:watch": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.0"
+  }
+}

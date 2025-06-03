@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI Chat - Standalone Bundle Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="openai-bundle.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 mr-3 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
+                    </svg>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">OpenAI Playground</h1>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">Zero-build OpenAI SDK integration</p>
+                    </div>
+                </div>
+                <button 
+                    onclick="toggleDarkMode()"
+                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    title="Toggle dark mode"
+                >
+                    <svg id="lightIcon" class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                    </svg>
+                    <svg id="darkIcon" class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto px-4 py-6">
+        <!-- API Key Setup -->
+        <div id="setup" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 transition-colors">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🔑 Setup</h2>
+            <div class="space-y-4">
+                <div>
+                    <label for="apiKey" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        OpenAI API Key
+                    </label>
+                    <input 
+                        type="password" 
+                        id="apiKey" 
+                        placeholder="sk-..."
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                    >
+                </div>
+                <div>
+                    <label for="baseUrl" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Base URL (Optional)
+                    </label>
+                    <input 
+                        type="url" 
+                        id="baseUrl" 
+                        placeholder="https://api.openai.com/v1"
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                    >
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Leave empty for default OpenAI API. Use for custom endpoints or proxies.</p>
+                </div>
+                <button 
+                    onclick="initializeApp()"
+                    class="w-full bg-blue-600 dark:bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium"
+                >
+                    Start App
+                </button>
+            </div>
+        </div>
+
+        <!-- Main App Interface -->
+        <div id="appContainer" class="hidden">
+            <!-- Tabs -->
+            <div class="bg-white dark:bg-gray-800 rounded-t-lg shadow-md transition-colors">
+                <div class="flex border-b border-gray-200 dark:border-gray-700">
+                    <button 
+                        onclick="switchTab('chat')"
+                        id="chatTab"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg bg-blue-600 dark:bg-blue-500 text-white rounded-tl-lg transition-colors"
+                        title="Chat"
+                    >
+                        💬
+                    </button>
+                    <button 
+                        onclick="switchTab('image')"
+                        id="imageTab"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 transition-colors"
+                        title="Image Generation"
+                    >
+                        🎨
+                    </button>
+                    <button 
+                        onclick="switchTab('tts')"
+                        id="ttsTab"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 transition-colors"
+                        title="Text-to-Speech"
+                    >
+                        🔊
+                    </button>
+                    <button 
+                        onclick="switchTab('settings')"
+                        id="settingsTab"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 rounded-tr-lg transition-colors"
+                        title="Settings"
+                    >
+                        ⚙️
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Tab Content -->
+            <div id="chatContent" class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+                <!-- Chat Settings -->
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex space-x-4">
+                        <div class="flex-1">
+                            <label for="chatModel" class="block text-sm font-medium text-gray-700 mb-1">
+                                Model
+                            </label>
+                            <select 
+                                id="chatModel"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            >
+                                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                                <option value="gpt-4o">GPT-4o</option>
+                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button 
+                                onclick="clearChat()"
+                                class="px-3 py-2 text-sm text-red-600 hover:text-red-700 border border-red-300 rounded-md hover:bg-red-50"
+                            >
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="h-96 overflow-y-auto" id="chatMessages">
+                    <div class="p-4">
+                        <div class="text-center text-gray-500 text-sm">
+                            Start the conversation!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="p-4 border-t border-gray-200">
+                    <div class="flex space-x-2">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            placeholder="Type your message..."
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            onkeypress="handleKeyPress(event)"
+                        >
+                        <button 
+                            onclick="sendMessage()"
+                            id="sendButton"
+                            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400"
+                        >
+                            Send
+                        </button>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-500">
+                        Press Enter to send
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Tab Content -->
+            <div id="imageContent" class="hidden bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+                <!-- Image Settings -->
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label for="imageModel" class="block text-sm font-medium text-gray-700 mb-1">
+                                Model
+                            </label>
+                            <select 
+                                id="imageModel"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                onchange="updateImageSizeOptions()"
+                            >
+                                <option value="gpt-image-1">GPT-Image-1</option>
+                                <option value="dall-e-3">DALL-E 3</option>
+                                <option value="dall-e-2">DALL-E 2</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="imageSize" class="block text-sm font-medium text-gray-700 mb-1">
+                                Size
+                            </label>
+                            <select 
+                                id="imageSize"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            >
+                                <option value="1024x1024">1024×1024</option>
+                                <option value="1792x1024">1792×1024</option>
+                                <option value="1024x1792">1024×1792</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="imageQuality" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Quality
+                            </label>
+                            <select 
+                                id="imageQuality"
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm transition-colors"
+                            >
+                                <option value="standard">Standard</option>
+                                <option value="hd">HD</option>
+                            </select>
+                        </div>
+                        <div id="responseFormatContainer">
+                            <label for="responseFormat" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Response Format
+                            </label>
+                            <select 
+                                id="responseFormat"
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm transition-colors"
+                            >
+                                <option value="url">URL (60min expiry)</option>
+                                <option value="b64_json">Base64 JSON</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Generation -->
+                <div class="p-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="imagePrompt" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Image Prompt
+                            </label>
+                            <textarea 
+                                id="imagePrompt" 
+                                rows="3"
+                                placeholder="Describe the image you want to generate..."
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                            ></textarea>
+                        </div>
+                        <button 
+                            onclick="generateImage()"
+                            id="generateButton"
+                            class="w-full bg-purple-600 dark:bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors font-medium disabled:bg-gray-400"
+                        >
+                            Generate Image
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Generated Images -->
+                <div id="imageResults" class="p-4 border-t border-gray-200">
+                    <div class="text-center text-gray-500 text-sm">
+                        Generated images will appear here
+                    </div>
+                </div>
+            </div>
+
+            <!-- TTS Tab Content -->
+            <div id="ttsContent" class="hidden bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+                <!-- TTS Settings -->
+                <div class="p-4 border-b border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="ttsModel" class="block text-sm font-medium text-gray-700 mb-1">
+                                Model
+                            </label>
+                            <select 
+                                id="ttsModel"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            >
+                                <option value="tts-1">TTS-1 (Fast)</option>
+                                <option value="tts-1-hd">TTS-1-HD (High Quality)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="ttsVoice" class="block text-sm font-medium text-gray-700 mb-1">
+                                Voice
+                            </label>
+                            <select 
+                                id="ttsVoice"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            >
+                                <option value="alloy">Alloy</option>
+                                <option value="echo">Echo</option>
+                                <option value="fable">Fable</option>
+                                <option value="onyx">Onyx</option>
+                                <option value="nova">Nova</option>
+                                <option value="shimmer">Shimmer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="ttsSpeed" class="block text-sm font-medium text-gray-700 mb-1">
+                                Speed
+                            </label>
+                            <select 
+                                id="ttsSpeed"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            >
+                                <option value="0.25">0.25x</option>
+                                <option value="0.5">0.5x</option>
+                                <option value="0.75">0.75x</option>
+                                <option value="1.0" selected>1.0x (Normal)</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2.0">2.0x</option>
+                                <option value="4.0">4.0x</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TTS Input -->
+                <div class="p-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="ttsText" class="block text-sm font-medium text-gray-700 mb-2">
+                                Text to Speech
+                            </label>
+                            <textarea 
+                                id="ttsText" 
+                                rows="4"
+                                placeholder="Enter the text you want to convert to speech..."
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                maxlength="4096"
+                            ></textarea>
+                            <div class="mt-1 text-sm text-gray-500">
+                                <span id="charCount">0</span>/4096 characters
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button 
+                                onclick="generateSpeech()"
+                                id="generateSpeechButton"
+                                class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors font-medium disabled:bg-gray-400"
+                            >
+                                Generate Speech
+                            </button>
+                            <button 
+                                onclick="previewVoice()"
+                                id="previewButton"
+                                class="px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 transition-colors font-medium disabled:bg-gray-100 disabled:text-gray-400"
+                            >
+                                Preview Voice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generated Audio -->
+                <div id="audioResults" class="p-4 border-t border-gray-200">
+                    <div class="text-center text-gray-500 text-sm">
+                        Generated audio will appear here
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab Content -->
+            <div id="settingsContent" class="hidden bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+                <div class="p-6 space-y-6">
+                    <!-- API Key Management -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🔑 API Key Management</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Current API Key Status
+                                </label>
+                                <div id="apiKeyStatus" class="p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300" id="apiKeyDisplay">No API key stored</span>
+                                        <button 
+                                            onclick="revokeApiKey()"
+                                            id="revokeButton"
+                                            class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors disabled:bg-gray-400"
+                                            disabled
+                                        >
+                                            Revoke
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="newApiKey" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Update API Key
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input 
+                                        type="password" 
+                                        id="newApiKey" 
+                                        placeholder="sk-..."
+                                        class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                                    >
+                                    <button 
+                                        onclick="updateApiKey()"
+                                        class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                                    >
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="newBaseUrl" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Update Base URL
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input 
+                                        type="url" 
+                                        id="newBaseUrl" 
+                                        placeholder="https://api.openai.com/v1"
+                                        class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                                    >
+                                    <button 
+                                        onclick="updateBaseUrl()"
+                                        class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                                    >
+                                        Update
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Leave empty to use default OpenAI API endpoint</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Settings -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🎨 Appearance</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Theme
+                                </label>
+                                <div class="flex space-x-2">
+                                    <button 
+                                        onclick="setTheme('light')"
+                                        id="lightThemeBtn"
+                                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                                    >
+                                        ☀️ Light
+                                    </button>
+                                    <button 
+                                        onclick="setTheme('dark')"
+                                        id="darkThemeBtn"
+                                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                                    >
+                                        🌙 Dark
+                                    </button>
+                                    <button 
+                                        onclick="setTheme('auto')"
+                                        id="autoThemeBtn"
+                                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                                    >
+                                        🔄 Auto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- App Info -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">ℹ️ About</h3>
+                        <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                            <p><strong>OpenAI Playground</strong> - Zero-build SDK integration</p>
+                            <p>Bundle size: ~239KB (unminified)</p>
+                            <p>Models: Chat, Image Generation, Text-to-Speech</p>
+                            <p>Built with: OpenAI SDK, Tailwind CSS, Vanilla JS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div id="status" class="hidden mt-4 p-4 rounded-md">
+            <div class="flex items-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span id="statusText">Thinking...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Access the bundled library
+        const { default: OpenAI } = OpenAIBundle;
+        
+        let client = null;
+        let messages = [];
+        let currentTab = 'chat';
+
+        // Theme and localStorage management
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('openai-theme') || 'auto';
+            setTheme(savedTheme, false);
+        }
+
+        function setTheme(theme, save = true) {
+            if (save) {
+                localStorage.setItem('openai-theme', theme);
+            }
+
+            const html = document.documentElement;
+            
+            if (theme === 'dark') {
+                html.classList.add('dark');
+            } else if (theme === 'light') {
+                html.classList.remove('dark');
+            } else { // auto
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            }
+
+            // Update theme button states
+            updateThemeButtons(theme);
+        }
+
+        function updateThemeButtons(currentTheme) {
+            const buttons = ['lightThemeBtn', 'darkThemeBtn', 'autoThemeBtn'];
+            const themes = ['light', 'dark', 'auto'];
+            
+            buttons.forEach((btnId, index) => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    if (themes[index] === currentTheme) {
+                        btn.className = btn.className.replace(/bg-white|bg-gray-700/, 'bg-blue-600').replace(/dark:bg-gray-700|dark:bg-blue-500/, 'dark:bg-blue-500').replace(/text-gray-700|text-gray-300/, 'text-white');
+                    } else {
+                        btn.className = btn.className.replace(/bg-blue-600|dark:bg-blue-500/, 'bg-white dark:bg-gray-700').replace(/text-white/, 'text-gray-700 dark:text-gray-300');
+                    }
+                }
+            });
+        }
+
+        function toggleDarkMode() {
+            const currentTheme = localStorage.getItem('openai-theme') || 'auto';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        // API Key and Base URL management
+        function loadApiKey() {
+            const savedKey = localStorage.getItem('openai-api-key');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+                updateApiKeyStatus();
+                return savedKey;
+            }
+            return null;
+        }
+
+        function loadBaseUrl() {
+            const savedUrl = localStorage.getItem('openai-base-url');
+            if (savedUrl) {
+                document.getElementById('baseUrl').value = savedUrl;
+                return savedUrl;
+            }
+            return null;
+        }
+
+        function saveApiKey(apiKey) {
+            localStorage.setItem('openai-api-key', apiKey);
+            updateApiKeyStatus();
+        }
+
+        function saveBaseUrl(baseUrl) {
+            if (baseUrl) {
+                localStorage.setItem('openai-base-url', baseUrl);
+            } else {
+                localStorage.removeItem('openai-base-url');
+            }
+        }
+
+        function updateApiKeyStatus() {
+            const savedKey = localStorage.getItem('openai-api-key');
+            const display = document.getElementById('apiKeyDisplay');
+            const revokeBtn = document.getElementById('revokeButton');
+            
+            if (savedKey) {
+                display.textContent = `API key ending in ...${savedKey.slice(-4)} (stored locally)`;
+                revokeBtn.disabled = false;
+            } else {
+                display.textContent = 'No API key stored';
+                revokeBtn.disabled = true;
+            }
+        }
+
+        function revokeApiKey() {
+            if (confirm('Are you sure you want to remove the stored API key and base URL?')) {
+                localStorage.removeItem('openai-api-key');
+                localStorage.removeItem('openai-base-url');
+                document.getElementById('apiKey').value = '';
+                document.getElementById('baseUrl').value = '';
+                document.getElementById('newApiKey').value = '';
+                document.getElementById('newBaseUrl').value = '';
+                client = null;
+                updateApiKeyStatus();
+                
+                // Hide app and show setup
+                document.getElementById('appContainer').classList.add('hidden');
+                document.getElementById('setup').classList.remove('hidden');
+            }
+        }
+
+        function updateApiKey() {
+            const newKey = document.getElementById('newApiKey').value.trim();
+            if (!newKey) {
+                alert('Please enter a valid API key');
+                return;
+            }
+            
+            saveApiKey(newKey);
+            document.getElementById('apiKey').value = newKey;
+            document.getElementById('newApiKey').value = '';
+            
+            // Reinitialize client with current base URL
+            const baseUrl = localStorage.getItem('openai-base-url');
+            reinitializeClient(newKey, baseUrl);
+            alert('API key updated successfully!');
+        }
+
+        function updateBaseUrl() {
+            const newUrl = document.getElementById('newBaseUrl').value.trim();
+            
+            saveBaseUrl(newUrl);
+            document.getElementById('baseUrl').value = newUrl;
+            document.getElementById('newBaseUrl').value = '';
+            
+            // Reinitialize client with current API key
+            const apiKey = localStorage.getItem('openai-api-key');
+            if (apiKey) {
+                reinitializeClient(apiKey, newUrl);
+                alert('Base URL updated successfully!');
+            } else {
+                alert('Base URL saved. Please set an API key to initialize the client.');
+            }
+        }
+
+        function reinitializeClient(apiKey, baseUrl) {
+            try {
+                const config = { 
+                    apiKey,
+                    dangerouslyAllowBrowser: true 
+                };
+                
+                if (baseUrl) {
+                    config.baseURL = baseUrl;
+                }
+                
+                client = new OpenAI(config);
+            } catch (error) {
+                alert('Error initializing client: ' + error.message);
+            }
+        }
+
+        function initializeApp() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const baseUrl = document.getElementById('baseUrl').value.trim();
+            
+            if (!apiKey) {
+                alert('Please enter your OpenAI API key');
+                return;
+            }
+
+            try {
+                const config = { 
+                    apiKey,
+                    dangerouslyAllowBrowser: true 
+                };
+                
+                if (baseUrl) {
+                    config.baseURL = baseUrl;
+                }
+                
+                client = new OpenAI(config);
+
+                // Save API key and base URL to localStorage
+                saveApiKey(apiKey);
+                saveBaseUrl(baseUrl);
+
+                // Hide setup, show app
+                document.getElementById('setup').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+                
+                // Focus on message input by default
+                document.getElementById('messageInput').focus();
+                
+            } catch (error) {
+                alert('Error initializing OpenAI client: ' + error.message);
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            const chatTab = document.getElementById('chatTab');
+            const imageTab = document.getElementById('imageTab');
+            const ttsTab = document.getElementById('ttsTab');
+            const settingsTab = document.getElementById('settingsTab');
+            const chatContent = document.getElementById('chatContent');
+            const imageContent = document.getElementById('imageContent');
+            const ttsContent = document.getElementById('ttsContent');
+            const settingsContent = document.getElementById('settingsContent');
+            
+            // Reset all tabs to inactive state
+            const inactiveClass = 'flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 transition-colors';
+            
+            chatTab.className = inactiveClass + ' rounded-tl-lg';
+            imageTab.className = inactiveClass;
+            ttsTab.className = inactiveClass;
+            settingsTab.className = inactiveClass + ' rounded-tr-lg';
+            
+            // Hide all content
+            chatContent.classList.add('hidden');
+            imageContent.classList.add('hidden');
+            ttsContent.classList.add('hidden');
+            settingsContent.classList.add('hidden');
+            
+            if (tab === 'chat') {
+                chatTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-blue-600 dark:bg-blue-500 text-white rounded-tl-lg transition-colors';
+                chatContent.classList.remove('hidden');
+                setTimeout(() => document.getElementById('messageInput')?.focus(), 100);
+            } else if (tab === 'image') {
+                imageTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-purple-600 dark:bg-purple-500 text-white transition-colors';
+                imageContent.classList.remove('hidden');
+                setTimeout(() => document.getElementById('imagePrompt')?.focus(), 100);
+            } else if (tab === 'tts') {
+                ttsTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-green-600 dark:bg-green-500 text-white transition-colors';
+                ttsContent.classList.remove('hidden');
+                setTimeout(() => document.getElementById('ttsText')?.focus(), 100);
+            } else if (tab === 'settings') {
+                settingsTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-gray-600 dark:bg-gray-500 text-white rounded-tr-lg transition-colors';
+                settingsContent.classList.remove('hidden');
+                updateApiKeyStatus();
+                updateThemeButtons(localStorage.getItem('openai-theme') || 'auto');
+                
+                // Populate current values in settings
+                const currentUrl = localStorage.getItem('openai-base-url') || '';
+                document.getElementById('newBaseUrl').value = currentUrl;
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message || !client) return;
+
+            // Add user message
+            addMessage('user', message);
+            messageInput.value = '';
+            
+            // Show loading status
+            showStatus('Thinking...');
+            
+            try {
+                // Add user message to conversation
+                messages.push({ role: 'user', content: message });
+                
+                const model = document.getElementById('chatModel').value;
+                const completion = await client.chat.completions.create({
+                    model: model,
+                    messages: messages,
+                    max_tokens: 1000,
+                });
+
+                const assistantMessage = completion.choices[0].message.content;
+                
+                // Add assistant message
+                addMessage('assistant', assistantMessage);
+                messages.push({ role: 'assistant', content: assistantMessage });
+                
+            } catch (error) {
+                addMessage('error', 'Error: ' + error.message);
+                console.error('API Error:', error);
+            } finally {
+                hideStatus();
+            }
+        }
+
+        function addMessage(role, content) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            
+            if (role === 'user') {
+                messageDiv.className = 'mb-4 flex justify-end px-4';
+                messageDiv.innerHTML = `
+                    <div class="bg-blue-600 text-white px-4 py-2 rounded-lg max-w-xs lg:max-w-md">
+                        ${escapeHtml(content)}
+                    </div>
+                `;
+            } else if (role === 'assistant') {
+                messageDiv.className = 'mb-4 flex justify-start px-4';
+                messageDiv.innerHTML = `
+                    <div class="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg max-w-xs lg:max-w-md">
+                        ${formatAssistantMessage(content)}
+                    </div>
+                `;
+            } else if (role === 'error') {
+                messageDiv.className = 'mb-4 flex justify-center px-4';
+                messageDiv.innerHTML = `
+                    <div class="bg-red-100 text-red-800 px-4 py-2 rounded-lg max-w-xs lg:max-w-md border border-red-300">
+                        ${escapeHtml(content)}
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatAssistantMessage(content) {
+            // Simple markdown-like formatting
+            return escapeHtml(content)
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code class="bg-gray-300 px-1 rounded">$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showStatus(text) {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = text;
+            status.className = 'mt-4 p-4 rounded-md bg-blue-50 border border-blue-200';
+            status.classList.remove('hidden');
+            
+            // Disable send button
+            document.getElementById('sendButton').disabled = true;
+        }
+
+        function hideStatus() {
+            document.getElementById('status').classList.add('hidden');
+            document.getElementById('sendButton').disabled = false;
+            document.getElementById('messageInput').focus();
+        }
+
+        function clearChat() {
+            if (confirm('Are you sure you want to clear the chat?')) {
+                messages = [];
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = `
+                    <div class="p-4">
+                        <div class="text-center text-gray-500 text-sm">
+                            Chat cleared. Start a new conversation!
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function generateImage() {
+            const prompt = document.getElementById('imagePrompt').value.trim();
+            
+            if (!prompt || !client) {
+                alert('Please enter a prompt for image generation');
+                return;
+            }
+
+            const model = document.getElementById('imageModel').value;
+            const size = document.getElementById('imageSize').value;
+            const quality = document.getElementById('imageQuality').value;
+            const responseFormat = document.getElementById('responseFormat').value;
+            
+            // Show loading status
+            showStatus('Generating image...');
+            document.getElementById('generateButton').disabled = true;
+            
+            try {
+                const requestParams = {
+                    model: model,
+                    prompt: prompt,
+                    size: size,
+                    quality: quality,
+                    n: 1,
+                };
+
+                // Only add response_format for models that support it (not gpt-image-1)
+                if (model !== 'gpt-image-1') {
+                    requestParams.response_format = responseFormat;
+                }
+
+                const response = await client.images.generate(requestParams);
+
+                let imageUrl;
+                const imageData = response.data[0];
+
+                if (responseFormat === 'b64_json' || model === 'gpt-image-1') {
+                    // Convert base64 to blob URL
+                    const base64Data = imageData.b64_json;
+                    const byteCharacters = atob(base64Data);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'image/png' });
+                    imageUrl = URL.createObjectURL(blob);
+                } else {
+                    // Use URL directly
+                    imageUrl = imageData.url;
+                }
+
+                addImageResult(prompt, imageUrl, imageData.revised_prompt, responseFormat === 'b64_json' || model === 'gpt-image-1');
+                
+                // Clear the prompt
+                document.getElementById('imagePrompt').value = '';
+                
+            } catch (error) {
+                addImageError('Error generating image: ' + error.message);
+                console.error('Image Generation Error:', error);
+            } finally {
+                hideStatus();
+                document.getElementById('generateButton').disabled = false;
+            }
+        }
+
+        function addImageResult(originalPrompt, imageUrl, revisedPrompt, isBase64 = false) {
+            const imageResults = document.getElementById('imageResults');
+            
+            // Clear placeholder text if this is the first image
+            if (imageResults.children.length === 1 && imageResults.children[0].textContent.includes('Generated images will appear here')) {
+                imageResults.innerHTML = '';
+            }
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'mb-6 p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 transition-colors';
+            
+            const timestamp = new Date().toLocaleString();
+            const formatInfo = isBase64 ? 'Base64 (Permanent)' : 'URL (60min expiry)';
+            
+            resultDiv.innerHTML = `
+                <div class="mb-3">
+                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Generated Image</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1"><strong>Your prompt:</strong> ${escapeHtml(originalPrompt)}</p>
+                    ${revisedPrompt && revisedPrompt !== originalPrompt ? 
+                        `<p class="text-sm text-gray-600 dark:text-gray-300 mb-1"><strong>Revised prompt:</strong> ${escapeHtml(revisedPrompt)}</p>` : ''
+                    }
+                    <p class="text-sm text-gray-500 dark:text-gray-400"><strong>Format:</strong> ${formatInfo} • ${timestamp}</p>
+                </div>
+                <div class="flex justify-center bg-gray-50 dark:bg-gray-600 rounded-lg p-2">
+                    <img src="${imageUrl}" alt="Generated image" class="max-w-full h-auto rounded-lg shadow-md" style="max-height: 400px;">
+                </div>
+                <div class="mt-3 flex justify-center space-x-2">
+                    <a href="${imageUrl}" download="generated-image-${Date.now()}.png" class="px-3 py-1 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+                        Download
+                    </a>
+                    <button onclick="removeImageResult(this, '${imageUrl}', ${isBase64})" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
+                        Delete
+                    </button>
+                </div>
+            `;
+            
+            imageResults.appendChild(resultDiv);
+            imageResults.scrollTop = imageResults.scrollHeight;
+        }
+
+        function removeImageResult(button, imageUrl, isBase64) {
+            // Clean up blob URL if it was created from base64
+            if (isBase64 && imageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(imageUrl);
+            }
+            button.closest('.mb-6').remove();
+        }
+
+        function addImageError(errorMessage) {
+            const imageResults = document.getElementById('imageResults');
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'mb-4 p-3 bg-red-100 border border-red-300 rounded-lg';
+            errorDiv.innerHTML = `
+                <div class="text-red-800 text-sm">${escapeHtml(errorMessage)}</div>
+                <button onclick="this.parentElement.remove()" class="mt-2 text-xs text-red-600 hover:text-red-800">
+                    Dismiss
+                </button>
+            `;
+            
+            imageResults.appendChild(errorDiv);
+        }
+
+        // Initialize
+        document.getElementById('messageInput').addEventListener('input', function() {
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = !this.value.trim() || !client;
+        });
+
+        document.getElementById('imagePrompt').addEventListener('input', function() {
+            const generateButton = document.getElementById('generateButton');
+            generateButton.disabled = !this.value.trim() || !client;
+        });
+
+        async function generateSpeech() {
+            const text = document.getElementById('ttsText').value.trim();
+            
+            if (!text || !client) {
+                alert('Please enter text to convert to speech');
+                return;
+            }
+
+            const model = document.getElementById('ttsModel').value;
+            const voice = document.getElementById('ttsVoice').value;
+            const speed = parseFloat(document.getElementById('ttsSpeed').value);
+            
+            // Show loading status
+            showStatus('Generating speech...');
+            document.getElementById('generateSpeechButton').disabled = true;
+            
+            try {
+                const response = await client.audio.speech.create({
+                    model: model,
+                    voice: voice,
+                    input: text,
+                    speed: speed,
+                });
+
+                // Convert response to blob and create audio URL
+                const audioBlob = new Blob([await response.arrayBuffer()], { type: 'audio/mpeg' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                addAudioResult(text, audioUrl, model, voice, speed);
+                
+                // Clear the text
+                document.getElementById('ttsText').value = '';
+                updateCharCount();
+                
+            } catch (error) {
+                addAudioError('Error generating speech: ' + error.message);
+                console.error('TTS Error:', error);
+            } finally {
+                hideStatus();
+                document.getElementById('generateSpeechButton').disabled = false;
+            }
+        }
+
+        async function previewVoice() {
+            const voice = document.getElementById('ttsVoice').value;
+            const speed = parseFloat(document.getElementById('ttsSpeed').value);
+            
+            // Sample text for voice preview
+            const previewTexts = {
+                'alloy': 'Hi, I\'m Alloy. I have a balanced and friendly voice.',
+                'echo': 'Hello, I\'m Echo. My voice is clear and articulate.',
+                'fable': 'Hey there, I\'m Fable. I sound warm and expressive.',
+                'onyx': 'Greetings, I\'m Onyx. My voice is deep and resonant.',
+                'nova': 'Hi, I\'m Nova. I have a bright and energetic voice.',
+                'shimmer': 'Hello, I\'m Shimmer. My voice is soft and gentle.'
+            };
+            
+            const previewText = previewTexts[voice] || 'This is a preview of the selected voice.';
+            
+            if (!client) {
+                alert('Please initialize the app first');
+                return;
+            }
+            
+            // Show loading status
+            showStatus('Generating voice preview...');
+            document.getElementById('previewButton').disabled = true;
+            
+            try {
+                const response = await client.audio.speech.create({
+                    model: 'tts-1', // Use faster model for preview
+                    voice: voice,
+                    input: previewText,
+                    speed: speed,
+                });
+
+                // Convert response to blob and play immediately
+                const audioBlob = new Blob([await response.arrayBuffer()], { type: 'audio/mpeg' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                const audio = new Audio(audioUrl);
+                audio.play();
+                
+                // Clean up the URL after playing
+                audio.addEventListener('ended', () => {
+                    URL.revokeObjectURL(audioUrl);
+                });
+                
+            } catch (error) {
+                addAudioError('Error generating voice preview: ' + error.message);
+                console.error('Voice Preview Error:', error);
+            } finally {
+                hideStatus();
+                document.getElementById('previewButton').disabled = false;
+            }
+        }
+
+        function addAudioResult(text, audioUrl, model, voice, speed) {
+            const audioResults = document.getElementById('audioResults');
+            
+            // Clear placeholder text if this is the first audio
+            if (audioResults.children.length === 1 && audioResults.children[0].textContent.includes('Generated audio will appear here')) {
+                audioResults.innerHTML = '';
+            }
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'mb-6 p-4 border border-gray-200 rounded-lg';
+            
+            const timestamp = new Date().toLocaleString();
+            
+            resultDiv.innerHTML = `
+                <div class="mb-3">
+                    <h4 class="font-medium text-gray-900 mb-2">Generated Audio</h4>
+                    <p class="text-sm text-gray-600 mb-1"><strong>Text:</strong> ${escapeHtml(text.substring(0, 100))}${text.length > 100 ? '...' : ''}</p>
+                    <p class="text-sm text-gray-600 mb-1"><strong>Settings:</strong> ${model}, ${voice}, ${speed}x speed</p>
+                    <p class="text-sm text-gray-500"><strong>Generated:</strong> ${timestamp}</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                    <audio controls class="w-full">
+                        <source src="${audioUrl}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div class="flex justify-center space-x-2">
+                    <a href="${audioUrl}" download="speech-${Date.now()}.mp3" class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                        Download
+                    </a>
+                    <button onclick="this.parentElement.parentElement.remove(); URL.revokeObjectURL('${audioUrl}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                        Delete
+                    </button>
+                </div>
+            `;
+            
+            audioResults.appendChild(resultDiv);
+            audioResults.scrollTop = audioResults.scrollHeight;
+        }
+
+        function addAudioError(errorMessage) {
+            const audioResults = document.getElementById('audioResults');
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'mb-4 p-3 bg-red-100 border border-red-300 rounded-lg';
+            errorDiv.innerHTML = `
+                <div class="text-red-800 text-sm">${escapeHtml(errorMessage)}</div>
+                <button onclick="this.parentElement.remove()" class="mt-2 text-xs text-red-600 hover:text-red-800">
+                    Dismiss
+                </button>
+            `;
+            
+            audioResults.appendChild(errorDiv);
+        }
+
+        function updateCharCount() {
+            const text = document.getElementById('ttsText').value;
+            document.getElementById('charCount').textContent = text.length;
+        }
+
+        // Add character counter for TTS
+        document.getElementById('ttsText').addEventListener('input', function() {
+            updateCharCount();
+            const generateButton = document.getElementById('generateSpeechButton');
+            const previewButton = document.getElementById('previewButton');
+            const hasText = this.value.trim().length > 0;
+            generateButton.disabled = !hasText || !client;
+            previewButton.disabled = !client;
+        });
+
+        function updateImageSizeOptions() {
+            const model = document.getElementById('imageModel').value;
+            const sizeSelect = document.getElementById('imageSize');
+            const qualitySelect = document.getElementById('imageQuality');
+            const responseFormatSelect = document.getElementById('responseFormat');
+            const responseFormatContainer = document.getElementById('responseFormatContainer');
+            
+            // Clear existing options
+            sizeSelect.innerHTML = '';
+            qualitySelect.innerHTML = '';
+            responseFormatSelect.innerHTML = '';
+            
+            // Define size options for each model
+            const sizeOptions = {
+                'gpt-image-1': [
+                    { value: 'auto', label: 'Auto (Default)' },
+                    { value: '1024x1024', label: '1024×1024 (Square)' },
+                    { value: '1536x1024', label: '1536×1024 (Landscape)' },
+                    { value: '1024x1536', label: '1024×1536 (Portrait)' }
+                ],
+                'dall-e-3': [
+                    { value: '1024x1024', label: '1024×1024 (Square)' },
+                    { value: '1792x1024', label: '1792×1024 (Landscape)' },
+                    { value: '1024x1792', label: '1024×1792 (Portrait)' }
+                ],
+                'dall-e-2': [
+                    { value: '256x256', label: '256×256' },
+                    { value: '512x512', label: '512×512' },
+                    { value: '1024x1024', label: '1024×1024' }
+                ]
+            };
+
+            // Define quality options for each model
+            const qualityOptions = {
+                'gpt-image-1': [
+                    { value: 'auto', label: 'Auto (Default)' },
+                    { value: 'high', label: 'High' },
+                    { value: 'medium', label: 'Medium' },
+                    { value: 'low', label: 'Low' }
+                ],
+                'dall-e-3': [
+                    { value: 'standard', label: 'Standard' },
+                    { value: 'hd', label: 'HD' }
+                ],
+                'dall-e-2': [
+                    { value: 'standard', label: 'Standard (Only Option)' }
+                ]
+            };
+
+            // Define response format options for each model
+            const responseFormatOptions = {
+                'gpt-image-1': [
+                    { value: 'b64_json', label: 'Base64 JSON (Always for GPT-Image-1)' }
+                ],
+                'dall-e-3': [
+                    { value: 'url', label: 'URL (60min expiry)' },
+                    { value: 'b64_json', label: 'Base64 JSON' }
+                ],
+                'dall-e-2': [
+                    { value: 'url', label: 'URL (60min expiry)' },
+                    { value: 'b64_json', label: 'Base64 JSON' }
+                ]
+            };
+            
+            // Add size options for selected model
+            const sizes = sizeOptions[model] || sizeOptions['dall-e-3'];
+            sizes.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.label;
+                sizeSelect.appendChild(optionElement);
+            });
+
+            // Add quality options for selected model
+            const qualities = qualityOptions[model] || [];
+            qualities.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.label;
+                qualitySelect.appendChild(optionElement);
+            });
+
+            // Add response format options for selected model
+            const responseFormats = responseFormatOptions[model] || responseFormatOptions['dall-e-3'];
+            responseFormats.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.label;
+                responseFormatSelect.appendChild(optionElement);
+            });
+            
+            // Handle visibility for different models
+            qualitySelect.style.display = 'block';
+            qualitySelect.parentElement.style.display = 'block';
+            
+            // Response format is available for all models
+            responseFormatContainer.style.display = 'block';
+            
+            // For GPT-Image-1, disable response format since it's always b64_json
+            if (model === 'gpt-image-1') {
+                responseFormatSelect.disabled = true;
+                responseFormatSelect.title = 'GPT-Image-1 always returns Base64 format';
+            } else {
+                responseFormatSelect.disabled = false;
+                responseFormatSelect.title = '';
+            }
+        }
+
+        // Initialize image size options on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateImageSizeOptions();
+            initializeTheme();
+            
+            // Load saved API key and base URL if available
+            const savedKey = loadApiKey();
+            const savedUrl = loadBaseUrl();
+            
+            if (savedKey) {
+                // Auto-initialize if we have a saved key
+                try {
+                    const config = { 
+                        apiKey: savedKey,
+                        dangerouslyAllowBrowser: true 
+                    };
+                    
+                    if (savedUrl) {
+                        config.baseURL = savedUrl;
+                    }
+                    
+                    client = new OpenAI(config);
+                    
+                    // Hide setup, show app
+                    document.getElementById('setup').classList.add('hidden');
+                    document.getElementById('appContainer').classList.remove('hidden');
+                } catch (error) {
+                    console.error('Error auto-initializing with saved configuration:', error);
+                }
+            }
+            
+            // Initialize API key status for settings
+            updateApiKeyStatus();
+        });
+    </script>
+</body>
+</html>
