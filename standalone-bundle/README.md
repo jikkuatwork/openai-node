@@ -18,9 +18,14 @@ This creates a single-file JavaScript bundle of the OpenAI SDK for zero-build we
 └── standalone-bundle/           # This bundling solution
     ├── package.json            # Bundle dependencies
     ├── build.js                # Bundle build script
-    ├── openai-bundle.js        # Generated bundle (239KB)
-    ├── openai-bundle.js.map    # Source map
-    └── example.html            # Usage example
+    └── dist/                   # Versioned bundles (output)
+        ├── v-<version>/        # Bundle version (root package.json)
+        │   ├── openai-sdk.js            # Unminified bundle (~239KB)
+        │   ├── openai-sdk.js.map        # Source map for unminified bundle
+        │   ├── openai-sdk.min.js        # Minified bundle (~100KB)
+        │   ├── openai-sdk.min.js.map    # Source map for minified bundle
+        │   └── example.html             # Usage example
+        └── v-latest -> v-<version>      # Symlink to the latest version
 ```
 
 ## 🚀 Initial Setup
@@ -47,33 +52,41 @@ This creates a single-file JavaScript bundle of the OpenAI SDK for zero-build we
 
 ### Basic HTML Usage
 
+Include either the unminified or minified bundle from the versioned `dist/` folder (or use `v-latest` to always get the latest):
+
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <script src="openai-bundle.js"></script>
+  <meta charset="UTF-8">
+  <title>OpenAI SDK Bundle</title>
+  <!-- Unminified (for debugging) -->
+  <script src="dist/v-<version>/openai-sdk.js"></script>
+  <!-- Minified (for production) -->
+  <script src="dist/v-<version>/openai-sdk.min.js"></script>
+  <!-- Or use the `v-latest` alias to always reference the most recent bundle -->
+  <script src="dist/v-latest/openai-sdk.min.js"></script>
 </head>
 <body>
-    <script>
-    // Extract the OpenAI constructor and utilities
-    const { default: OpenAI, toFile } = OpenAIBundle;
-    
-    // Create client with runtime configuration
-    const client = new OpenAI({ 
-        apiKey: 'sk-...',  // Your API key
-        baseURL: 'https://api.openai.com/v1',  // Optional custom base URL
-        dangerouslyAllowBrowser: true  // Required for browser usage
+<script>
+  // Access the SDK via the global OpenAIBundle
+  const { default: OpenAI, toFile } = OpenAIBundle;
+
+  const client = new OpenAI({
+    apiKey: 'sk-...',              // Your API key
+    dangerouslyAllowBrowser: true  // Required for browser usage
+  });
+
+  async function chat() {
+    const response = await client.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: 'Hello from the bundle!' }]
     });
-    
-    // Use the full OpenAI API
-    async function chat() {
-        const completion = await client.chat.completions.create({
-            model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: 'Hello!' }]
-        });
-        console.log(completion.choices[0].message);
-    }
-    </script>
+    console.log(response.choices[0].message.content);
+  }
+
+  chat();
+</script>
 </body>
 </html>
 ```
@@ -115,7 +128,7 @@ const {
    npm run build
    ```
 
-### Automated Update Script
+### Automated Update Script (Optional)
 
 Create this script for one-command updates:
 
@@ -151,14 +164,11 @@ The `build.js` script uses esbuild with these settings:
 Edit `build.js` to customize the bundle:
 
 ```javascript
-// Enable minification for production
-minify: true,  // Default: false
-
 // Change target browsers
 target: ['es2015'],  // Default: ['es2020']
 
 // Exclude source maps
-sourcemap: false,  // Default: true
+sourcemap: false,    // Default: true
 ```
 
 ## 🐛 Troubleshooting
@@ -172,10 +182,7 @@ cd .. && npm run build
 
 ### Bundle Size Optimization
 
-To reduce size, enable minification in `build.js`:
-```javascript
-minify: true,  // Reduces to ~100KB
-```
+Bundle generation now outputs both unminified (~239KB) and minified (~100KB) bundles automatically.
 
 ### API Key Security
 

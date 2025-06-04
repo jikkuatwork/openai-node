@@ -3,7 +3,6 @@ const esbuild = require('esbuild');
 const path = require('path');
 const fs = require('fs');
 
-const watch = process.argv.includes('--watch');
 
 async function build() {
   const distPath = path.join(__dirname, '..', 'dist');
@@ -15,17 +14,17 @@ async function build() {
   }
 
   const entryPoint = path.join(distPath, 'index.mjs');
-  const outfile = path.join(__dirname, 'openai-bundle.js');
+  const { version } = require(path.join(__dirname, '..', 'package.json'));
+  const distDirBundle = path.join(__dirname, 'dist', `v-${version}`);
+  if (!fs.existsSync(distDirBundle)) fs.mkdirSync(distDirBundle, { recursive: true });
 
   const buildOptions = {
     entryPoints: [entryPoint],
     bundle: true,
-    outfile,
     format: 'iife',
     globalName: 'OpenAIBundle',
     platform: 'browser',
     target: ['es2020'],
-    minify: false,
     sourcemap: true,
     banner: {
       js: `/* OpenAI SDK Bundle - Generated ${new Date().toISOString()} */`
@@ -37,16 +36,32 @@ async function build() {
   };
 
   try {
-    if (watch) {
-      const ctx = await esbuild.context(buildOptions);
-      await ctx.watch();
-      console.log('👀 Watching for changes...');
-    } else {
-      await esbuild.build(buildOptions);
-    }
+    // Always output both unminified and minified bundles
+    const nonMinFile = path.join(distDirBundle, 'openai-sdk.js');
+    const minFile = path.join(distDirBundle, 'openai-sdk.min.js');
 
-    console.log(`✅ Bundle created: ${outfile}`);
-    
+    // Build unminified bundle
+    await esbuild.build({
+      ...buildOptions,
+      outfile: nonMinFile,
+      minify: false,
+    });
+    console.log(`✅ Bundle created: ${nonMinFile}`);
+
+    // Build minified bundle
+    await esbuild.build({
+      ...buildOptions,
+      outfile: minFile,
+      minify: true,
+    });
+    console.log(`✅ Bundle created: ${minFile}`);
+
+    // Create or update `v-latest` symlink to the latest version
+    const latestLink = path.join(__dirname, 'dist', 'v-latest');
+    if (fs.existsSync(latestLink)) fs.rmSync(latestLink, { recursive: true, force: true });
+    fs.symlinkSync(`v-${version}`, latestLink, 'dir');
+    console.log(`✅ Symlink created: ${latestLink} -> v-${version}`);
+
     // Create usage example
     const examplePath = path.join(__dirname, 'example.html');
     if (!fs.existsSync(examplePath)) {
@@ -55,7 +70,7 @@ async function build() {
 <head>
     <meta charset="UTF-8">
     <title>OpenAI Bundle Example</title>
-    <script src="openai-bundle.js"></script>
+    <script src="openai-sdk.min.js"></script>
 </head>
 <body>
     <h1>OpenAI Bundle Test</h1>
