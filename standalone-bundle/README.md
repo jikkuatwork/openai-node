@@ -1,10 +1,12 @@
 # OpenAI Standalone Bundle
 
-This creates a single-file JavaScript bundle of the OpenAI SDK for zero-build web development.
+This creates a single-file JavaScript bundle of the OpenAI SDK for zero-build
+web development.
 
 ## 🎯 Purpose
 
-- **Zero-build development**: Use OpenAI SDK directly in HTML without any build tools
+- **Zero-build development**: Use OpenAI SDK directly in HTML without any build
+  tools
 - **Runtime configuration**: API keys and base URLs can be provided at runtime
 - **Full API compatibility**: Same API as the official SDK
 - **Non-invasive**: Never modifies the original OpenAI source code
@@ -52,7 +54,8 @@ This creates a single-file JavaScript bundle of the OpenAI SDK for zero-build we
 
 ### Basic HTML Usage
 
-Include either the unminified or minified bundle from the versioned `dist/` folder (or use `v-latest` to always get the latest):
+Include either the unminified or minified bundle from the versioned `dist/`
+folder (or use `v-latest` to always get the latest):
 
 ```html
 <!DOCTYPE html>
@@ -96,13 +99,13 @@ Include either the unminified or minified bundle from the versioned `dist/` fold
 All exports from the original SDK are available via the `OpenAIBundle` global:
 
 ```javascript
-const { 
-    default: OpenAI,      // Main client constructor
-    toFile,              // File upload helper
-    APIError,            // Error classes
-    APIConnectionError,
-    APIUserAbortError,
-    // ... all other exports
+const {
+  default: OpenAI, // Main client constructor
+  toFile, // File upload helper
+  APIError, // Error classes
+  APIConnectionError,
+  APIUserAbortError,
+  // ... all other exports
 } = OpenAIBundle;
 ```
 
@@ -176,17 +179,20 @@ sourcemap: false,    // Default: true
 ### "dist directory not found" Error
 
 The main OpenAI project hasn't been built. Run:
+
 ```bash
 cd .. && npm run build
 ```
 
 ### Bundle Size Optimization
 
-Bundle generation now outputs both unminified (~239KB) and minified (~100KB) bundles automatically.
+Bundle generation now outputs both unminified (~239KB) and minified (~100KB)
+bundles automatically.
 
 ### API Key Security
 
 ⚠️ **Warning**: This bundle is for POCs and development only. In production:
+
 - Never expose API keys in client-side code
 - Use a backend proxy to handle API calls
 - Implement proper authentication
@@ -202,4 +208,4 @@ Bundle generation now outputs both unminified (~239KB) and minified (~100KB) bun
 
 - [OpenAI SDK Documentation](https://github.com/openai/openai-node)
 - [esbuild Documentation](https://esbuild.github.io/)
-- [Example HTML](./example.html) - Working demo in this directory
+- [Example HTML](./index.html) - Working demo in this directory
