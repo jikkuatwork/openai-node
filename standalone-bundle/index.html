@@ -55,10 +55,9 @@
                             type="password"
                             id="apiKey"
                             name="password"
-                            placeholder="sk-..."
+                            placeholder="sk-... (optional for some endpoints)"
                             autocomplete="current-password"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
-                            required
                         >
                     </div>
                     <div>
@@ -79,6 +78,7 @@
                     >
                         Start App
                     </button>
+                    <p class="mt-2 text-xs text-neutral-500 dark:text-neutral-400">API key is optional for some endpoints. Leave empty if not required.</p>
                 </div>
             </form>
         </div>
@@ -132,14 +132,21 @@
                             <label for="chatModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Model
                             </label>
-                            <select
-                                id="chatModel"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                            >
-                                <option value="gpt-4o-mini">GPT-4o Mini</option>
-                                <option value="gpt-4o">GPT-4o</option>
-                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                            </select>
+                            <div class="relative">
+                                <select
+                                    id="chatModel"
+                                    class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
+                                    onchange="handleModelChange()"
+                                >
+                                    <option value="">Loading models...</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    id="customModel"
+                                    placeholder="Enter model name..."
+                                    class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors hidden"
+                                >
+                            </div>
                         </div>
                         <div class="flex items-end">
                             <button
@@ -162,41 +169,41 @@
                 </div>
 
                 <!-- Message Input -->
-                <div class="p-4 border-t border-gray-200">
+                <div class="p-4 border-t border-neutral-200 dark:border-neutral-700">
                     <div class="flex space-x-2">
                         <input
                             type="text"
                             id="messageInput"
                             placeholder="Type your message..."
-                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                             onkeypress="handleKeyPress(event)"
                         >
                         <button
                             onclick="sendMessage()"
                             id="sendButton"
-                            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400"
+                            class="bg-neutral-600 dark:bg-neutral-500 text-white px-6 py-2 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-gray-400"
                         >
                             Send
                         </button>
                     </div>
-                    <div class="mt-2 text-sm text-gray-500">
+                    <div class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
                         Press Enter to send
                     </div>
                 </div>
             </div>
 
             <!-- Image Tab Content -->
-            <div id="imageContent" class="hidden bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+            <div id="imageContent" class="hidden bg-white dark:bg-neutral-800 rounded-b-lg shadow-md transition-colors">
                 <!-- Image Settings -->
-                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
-                            <label for="imageModel" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="imageModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Model
                             </label>
                             <select
                                 id="imageModel"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                                 onchange="updateImageSizeOptions()"
                             >
                                 <option value="gpt-image-1">GPT-Image-1</option>
@@ -205,12 +212,12 @@
                             </select>
                         </div>
                         <div>
-                            <label for="imageSize" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="imageSize" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Size
                             </label>
                             <select
                                 id="imageSize"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                             >
                                 <option value="1024x1024">1024×1024</option>
                                 <option value="1792x1024">1792×1024</option>
@@ -218,24 +225,24 @@
                             </select>
                         </div>
                         <div>
-                            <label for="imageQuality" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label for="imageQuality" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Quality
                             </label>
                             <select
                                 id="imageQuality"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm transition-colors"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                             >
                                 <option value="standard">Standard</option>
                                 <option value="hd">HD</option>
                             </select>
                         </div>
                         <div id="responseFormatContainer">
-                            <label for="responseFormat" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label for="responseFormat" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Response Format
                             </label>
                             <select
                                 id="responseFormat"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm transition-colors"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                             >
                                 <option value="url">URL (60min expiry)</option>
                                 <option value="b64_json">Base64 JSON</option>
@@ -248,20 +255,20 @@
                 <div class="p-4">
                     <div class="space-y-4">
                         <div>
-                            <label for="imagePrompt" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="imagePrompt" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                 Image Prompt
                             </label>
                             <textarea
                                 id="imagePrompt"
                                 rows="3"
                                 placeholder="Describe the image you want to generate..."
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                             ></textarea>
                         </div>
                         <button
                             onclick="generateImage()"
                             id="generateButton"
-                            class="w-full bg-purple-600 dark:bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors font-medium disabled:bg-gray-400"
+                            class="w-full bg-neutral-600 dark:bg-neutral-500 text-white py-2 px-4 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-gray-400"
                         >
                             Generate Image
                         </button>
@@ -269,37 +276,37 @@
                 </div>
 
                 <!-- Generated Images -->
-                <div id="imageResults" class="p-4 border-t border-gray-200">
-                    <div class="text-center text-gray-500 text-sm">
+                <div id="imageResults" class="p-4 border-t border-neutral-200 dark:border-neutral-700">
+                    <div class="text-center text-neutral-500 dark:text-neutral-400 text-sm">
                         Generated images will appear here
                     </div>
                 </div>
             </div>
 
             <!-- TTS Tab Content -->
-            <div id="ttsContent" class="hidden bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+            <div id="ttsContent" class="hidden bg-white dark:bg-neutral-800 rounded-b-lg shadow-md transition-colors">
                 <!-- TTS Settings -->
                 <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label for="ttsModel" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="ttsModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Model
                             </label>
                             <select
                                 id="ttsModel"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                             >
                                 <option value="tts-1">TTS-1 (Fast)</option>
                                 <option value="tts-1-hd">TTS-1-HD (High Quality)</option>
                             </select>
                         </div>
                         <div>
-                            <label for="ttsVoice" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="ttsVoice" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Voice
                             </label>
                             <select
                                 id="ttsVoice"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                             >
                                 <option value="alloy">Alloy</option>
                                 <option value="echo">Echo</option>
@@ -310,12 +317,12 @@
                             </select>
                         </div>
                         <div>
-                            <label for="ttsSpeed" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="ttsSpeed" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Speed
                             </label>
                             <select
                                 id="ttsSpeed"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                             >
                                 <option value="0.25">0.25x</option>
                                 <option value="0.5">0.5x</option>
@@ -334,17 +341,17 @@
                 <div class="p-4">
                     <div class="space-y-4">
                         <div>
-                            <label for="ttsText" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="ttsText" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                 Text to Speech
                             </label>
                             <textarea
                                 id="ttsText"
                                 rows="4"
                                 placeholder="Enter the text you want to convert to speech..."
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                                 maxlength="4096"
                             ></textarea>
-                            <div class="mt-1 text-sm text-gray-500">
+                            <div class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
                                 <span id="charCount">0</span>/4096 characters
                             </div>
                         </div>
@@ -352,14 +359,14 @@
                             <button
                                 onclick="generateSpeech()"
                                 id="generateSpeechButton"
-                                class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors font-medium disabled:bg-gray-400"
+                                class="flex-1 bg-neutral-600 dark:bg-neutral-500 text-white py-2 px-4 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-gray-400"
                             >
                                 Generate Speech
                             </button>
                             <button
                                 onclick="previewVoice()"
                                 id="previewButton"
-                                class="px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 transition-colors font-medium disabled:bg-gray-100 disabled:text-gray-400"
+                                class="px-4 py-2 border border-neutral-600 dark:border-neutral-500 text-neutral-600 dark:text-neutral-300 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors font-medium disabled:bg-gray-100 disabled:text-gray-400"
                             >
                                 Preview Voice
                             </button>
@@ -401,7 +408,7 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="newApiKey" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="newApiKey" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                     Update API Key
                                 </label>
                                 <form onsubmit="updateApiKey(); return false;" class="flex space-x-2">
@@ -413,18 +420,18 @@
                                         name="password"
                                         placeholder="sk-..."
                                         autocomplete="new-password"
-                                        class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                                        class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                                     >
                                     <button
                                         type="submit"
-                                        class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                                        class="px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors"
                                     >
                                         Update
                                     </button>
                                 </form>
                             </div>
                             <div>
-                                <label for="newBaseUrl" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="newBaseUrl" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                     Update Base URL
                                 </label>
                                 <form onsubmit="updateBaseUrl(); return false;" class="flex space-x-2">
@@ -432,47 +439,47 @@
                                         type="url"
                                         id="newBaseUrl"
                                         placeholder="https://api.openai.com/v1"
-                                        class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                                        class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                                     >
                                     <button
                                         type="submit"
-                                        class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                                        class="px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors"
                                     >
                                         Update
                                     </button>
                                 </form>
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Leave empty to use default OpenAI API endpoint</p>
+                                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Leave empty to use default OpenAI API endpoint</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Theme Settings -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🎨 Appearance</h3>
+                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">🎨 Appearance</h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                     Theme
                                 </label>
                                 <div class="flex space-x-2">
                                     <button
                                         onclick="setTheme('light')"
                                         id="lightThemeBtn"
-                                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                                        class="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-600 transition-colors"
                                     >
                                         ☀️ Light
                                     </button>
                                     <button
                                         onclick="setTheme('dark')"
                                         id="darkThemeBtn"
-                                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                                        class="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-600 transition-colors"
                                     >
                                         🌙 Dark
                                     </button>
                                     <button
                                         onclick="setTheme('auto')"
                                         id="autoThemeBtn"
-                                        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                                        class="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-neutral-600 dark:bg-neutral-500 text-white hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors"
                                     >
                                         🔄 Auto
                                     </button>
@@ -483,11 +490,11 @@
 
                     <!-- App Info -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">ℹ️ About</h3>
-                        <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                            <p><strong>OpenAI Playground</strong> - Zero-build SDK integration</p>
-                            <p>Bundle size: ~239KB (unminified)</p>
+                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">ℹ️ About</h3>
+                        <div class="space-y-2 text-sm text-neutral-600 dark:text-neutral-300">
+                            <p><strong>Vanilla AI</strong> - Build free, standalone OpenAI SDK</p>
                             <p>Models: Chat, Image Generation, Text-to-Speech</p>
+                            <p>Compatible with: OpenAI, Nebius, and other OpenAI-compatible APIs</p>
                             <p>Built with: OpenAI SDK, Tailwind CSS, Vanilla JS</p>
                         </div>
                     </div>
@@ -588,7 +595,10 @@
         }
 
         function saveApiKey(apiKey) {
-            localStorage.setItem('openai-api-key', apiKey);
+            // Don't save the placeholder key
+            if (apiKey !== 'xxxxxxxxxxxxxxxxx') {
+                localStorage.setItem('openai-api-key', apiKey);
+            }
             updateApiKeyStatus();
         }
 
@@ -632,14 +642,10 @@
         }
 
         window.updateApiKey = function() {
-            const newKey = document.getElementById('newApiKey').value.trim();
-            if (!newKey) {
-                alert('Please enter a valid API key');
-                return;
-            }
+            const newKey = document.getElementById('newApiKey').value.trim() || 'xxxxxxxxxxxxxxxxx';
 
             saveApiKey(newKey);
-            document.getElementById('apiKey').value = newKey;
+            document.getElementById('apiKey').value = newKey === 'xxxxxxxxxxxxxxxxx' ? '' : newKey;
             document.getElementById('newApiKey').value = '';
 
             // Reinitialize client with current base URL
@@ -656,12 +662,111 @@
             document.getElementById('newBaseUrl').value = '';
 
             // Reinitialize client with current API key
-            const apiKey = localStorage.getItem('openai-api-key');
-            if (apiKey) {
-                reinitializeClient(apiKey, newUrl);
-                alert('Base URL updated successfully!');
+            const apiKey = localStorage.getItem('openai-api-key') || 'xxxxxxxxxxxxxxxxx';
+            reinitializeClient(apiKey, newUrl);
+            alert('Base URL updated successfully!');
+        }
+
+        window.handleModelChange = function() {
+            const modelSelect = document.getElementById('chatModel');
+            const customModelInput = document.getElementById('customModel');
+            
+            if (modelSelect.value === 'custom') {
+                modelSelect.classList.add('hidden');
+                customModelInput.classList.remove('hidden');
+                customModelInput.focus();
             } else {
-                alert('Base URL saved. Please set an API key to initialize the client.');
+                modelSelect.classList.remove('hidden');
+                customModelInput.classList.add('hidden');
+            }
+        }
+
+        async function loadAvailableModels() {
+            if (!client) return;
+            
+            const modelSelect = document.getElementById('chatModel');
+            modelSelect.innerHTML = '<option value="">Loading models...</option>';
+            
+            try {
+                console.log('🔍 Fetching available models...');
+                const models = await client.models.list();
+                console.log('✅ Models fetched:', models.data.length);
+                
+                // Clear loading option
+                modelSelect.innerHTML = '';
+                
+                // Filter and sort models (prioritize chat/instruct models)
+                const sortedModels = models.data
+                    .filter(model => {
+                        const id = model.id.toLowerCase();
+                        // Prioritize chat, instruct, and gpt models
+                        return id.includes('chat') || id.includes('instruct') || id.includes('gpt') || 
+                               id.includes('llama') || id.includes('deepseek') || true; // fallback to show all
+                    })
+                    .sort((a, b) => {
+                        // Prioritize certain models
+                        const priority = (id) => {
+                            if (id.includes('gpt-4')) return 1;
+                            if (id.includes('gpt-3.5')) return 2;
+                            if (id.includes('deepseek')) return 3;
+                            if (id.includes('llama')) return 4;
+                            return 5;
+                        };
+                        return priority(a.id) - priority(b.id) || a.id.localeCompare(b.id);
+                    });
+                
+                // Add model options
+                sortedModels.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.id;
+                    option.textContent = model.id;
+                    modelSelect.appendChild(option);
+                });
+                
+                // Add custom model option
+                const customOption = document.createElement('option');
+                customOption.value = 'custom';
+                customOption.textContent = '✏️ Enter custom model...';
+                modelSelect.appendChild(customOption);
+                
+                // Select first available model
+                if (sortedModels.length > 0) {
+                    modelSelect.value = sortedModels[0].id;
+                    console.log('🎯 Default model selected:', sortedModels[0].id);
+                }
+                
+            } catch (error) {
+                console.error('❌ Failed to fetch models:', error);
+                
+                // Provide helpful fallback based on the base URL
+                const isNebius = client.baseURL?.includes('nebius');
+                const isLocal = client.baseURL?.includes('localhost') || client.baseURL?.includes('127.0.0.1');
+                
+                let fallbackModels = '';
+                
+                if (isNebius) {
+                    fallbackModels = `
+                        <option value="deepseek-ai/DeepSeek-R1">DeepSeek R1</option>
+                        <option value="deepseek-ai/DeepSeek-V3">DeepSeek V3</option>
+                        <option value="meta-llama/Meta-Llama-3.1-70B-Instruct">Llama 3.1 70B</option>
+                        <option value="custom">✏️ Enter custom model...</option>
+                    `;
+                } else if (isLocal) {
+                    fallbackModels = `
+                        <option value="llama3.2">llama3.2</option>
+                        <option value="mistral">mistral</option>
+                        <option value="custom">✏️ Enter custom model...</option>
+                    `;
+                } else {
+                    fallbackModels = `
+                        <option value="gpt-4o-mini">gpt-4o-mini</option>
+                        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                        <option value="custom">✏️ Enter custom model...</option>
+                    `;
+                }
+                
+                modelSelect.innerHTML = fallbackModels;
+                console.warn('⚠️ Could not load models from API. Using provider-specific fallback options.');
             }
         }
 
@@ -673,23 +778,28 @@
                 };
 
                 if (baseUrl) {
-                    config.baseURL = baseUrl;
+                    // Ensure baseURL doesn't end with slash to avoid double slashes
+                    config.baseURL = baseUrl.replace(/\/$/, '');
+                    console.log('🔧 Client config:', { apiKey: apiKey.slice(0, 8) + '...', baseURL: config.baseURL });
+                } else {
+                    console.log('🔧 Client config: Using default OpenAI API');
                 }
 
                 client = new OpenAI(config);
+                
+                // Update tab availability based on provider
+                updateTabAvailability(baseUrl);
+                
+                // Load models after client is initialized
+                loadAvailableModels();
             } catch (error) {
                 alert('Error initializing client: ' + error.message);
             }
         }
 
-        window.initializeApp = function() {
-            const apiKey = document.getElementById('apiKey').value.trim();
+        window.initializeApp = async function() {
+            const apiKey = document.getElementById('apiKey').value.trim() || 'xxxxxxxxxxxxxxxxx';
             const baseUrl = document.getElementById('baseUrl').value.trim();
-
-            if (!apiKey) {
-                alert('Please enter your OpenAI API key');
-                return;
-            }
 
             try {
                 const config = {
@@ -698,10 +808,21 @@
                 };
 
                 if (baseUrl) {
-                    config.baseURL = baseUrl;
+                    // Ensure baseURL doesn't end with slash to avoid double slashes
+                    config.baseURL = baseUrl.replace(/\/$/, '');
+                    console.log('🚀 Initializing with baseURL:', config.baseURL);
+                } else {
+                    console.log('🚀 Initializing with default OpenAI API');
                 }
 
                 client = new OpenAI(config);
+                console.log('✅ Client initialized successfully');
+
+                // Update tab availability based on provider
+                updateTabAvailability(baseUrl);
+
+                // Load available models
+                await loadAvailableModels();
 
                 // Save API key and base URL to localStorage
                 saveApiKey(apiKey);
@@ -719,7 +840,54 @@
             }
         }
 
+        function updateTabAvailability(baseUrl) {
+            const isOpenAI = !baseUrl || baseUrl.includes('api.openai.com');
+            const imageTab = document.getElementById('imageTab');
+            const ttsTab = document.getElementById('ttsTab');
+            
+            console.log('🔧 Updating tab availability:', { baseUrl, isOpenAI });
+            
+            if (isOpenAI) {
+                // Enable image and TTS tabs for OpenAI
+                imageTab.style.opacity = '1';
+                imageTab.style.pointerEvents = 'auto';
+                imageTab.title = 'Image Generation';
+                
+                ttsTab.style.opacity = '1';
+                ttsTab.style.pointerEvents = 'auto';
+                ttsTab.title = 'Text-to-Speech';
+                
+                console.log('✅ Image and TTS tabs enabled for OpenAI API');
+            } else {
+                // Disable image and TTS tabs for other providers
+                imageTab.style.opacity = '0.5';
+                imageTab.style.pointerEvents = 'none';
+                imageTab.title = 'Image Generation (OpenAI API only)';
+                
+                ttsTab.style.opacity = '0.5';
+                ttsTab.style.pointerEvents = 'none';
+                ttsTab.title = 'Text-to-Speech (OpenAI API only)';
+                
+                // If currently on disabled tab, switch to chat
+                const currentTab = document.querySelector('[class*="bg-neutral-600"]').id;
+                if (currentTab === 'imageTab' || currentTab === 'ttsTab') {
+                    window.switchTab('chat');
+                }
+                
+                console.log('⚠️ Image and TTS tabs disabled for non-OpenAI provider');
+            }
+        }
+
         window.switchTab = function(tab) {
+            // Check if trying to access disabled tab
+            const baseUrl = localStorage.getItem('openai-base-url');
+            const isOpenAI = !baseUrl || baseUrl.includes('api.openai.com');
+            
+            if (!isOpenAI && (tab === 'image' || tab === 'tts')) {
+                console.log('⚠️ Cannot access disabled tab:', tab);
+                return; // Prevent switching to disabled tabs
+            }
+
             currentTab = tab;
 
             // Update tab buttons
@@ -794,12 +962,25 @@
                 // Add user message to conversation
                 messages.push({ role: 'user', content: message });
 
-                const model = document.getElementById('chatModel').value;
+                // Get model from select or custom input
+                const modelSelect = document.getElementById('chatModel');
+                const customModelInput = document.getElementById('customModel');
+                const model = modelSelect.value === 'custom' ? customModelInput.value.trim() : modelSelect.value;
+                
+                if (!model) {
+                    alert('Please select or enter a model name');
+                    return;
+                }
+                
+                console.log('🔥 Making API call:', { model, baseURL: client.baseURL, messages: messages.length + ' messages' });
+                
                 const completion = await client.chat.completions.create({
                     model: model,
                     messages: messages,
                     max_tokens: 1000,
                 });
+                
+                console.log('✅ API call successful');
 
                 const assistantMessage = completion.choices[0].message.content;
 
@@ -1316,19 +1497,25 @@
             const savedKey = loadApiKey();
             const savedUrl = loadBaseUrl();
 
-            if (savedKey) {
-                // Auto-initialize if we have a saved key
+            if (savedKey || savedUrl) {
+                // Auto-initialize if we have a saved key or base URL
                 try {
                     const config = {
-                        apiKey: savedKey,
+                        apiKey: savedKey || 'xxxxxxxxxxxxxxxxx',
                         dangerouslyAllowBrowser: true
                     };
 
                     if (savedUrl) {
-                        config.baseURL = savedUrl;
+                        config.baseURL = savedUrl.replace(/\/$/, '');
                     }
 
                     client = new OpenAI(config);
+
+                    // Update tab availability based on saved URL
+                    updateTabAvailability(savedUrl);
+
+                    // Load models after client is initialized
+                    loadAvailableModels();
 
                     // Hide setup, show app
                     document.getElementById('setup').classList.add('hidden');
