@@ -31,8 +31,8 @@
                         <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
                     </svg>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Vanilla AI</h1>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">Build free, standalone OpenAI SDK</p>
+                        <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Vanilla AI</h1>
+                        <p class="text-neutral-600 dark:text-neutral-300 text-sm mt-1">Build free, standalone OpenAI SDK</p>
                     </div>
                 </div>
             </div>
@@ -42,13 +42,19 @@
     <div class="max-w-4xl mx-auto px-4 py-6">
         <!-- API Key Setup -->
         <div id="setup" class="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6 mb-6 transition-colors">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🔑 Setup</h2>
+            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-11.83 1.82L9 15h3l-3 3-3-3h3l1.83-1.82A6 6 0 0117 9z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
+                </svg>
+                Setup
+            </h2>
             <form onsubmit="initializeApp(); return false;">
                 <div class="space-y-4">
                     <!-- Hidden username field for accessibility -->
                     <input type="text" name="username" autocomplete="username" style="display: none;" readonly>
                     <div>
-                        <label for="apiKey" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label for="apiKey" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                             OpenAI API Key
                         </label>
                         <input
@@ -57,20 +63,20 @@
                             name="password"
                             placeholder="sk-... (optional for some endpoints)"
                             autocomplete="current-password"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                            class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                         >
                     </div>
                     <div>
-                        <label for="baseUrl" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label for="baseUrl" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                             Base URL (Optional)
                         </label>
                         <input
                             type="url"
                             id="baseUrl"
                             placeholder="https://api.openai.com/v1"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                            class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                         >
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Leave empty for default OpenAI API. Use for custom endpoints or proxies.</p>
+                        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Leave empty for default OpenAI API. Use for custom endpoints or proxies.</p>
                     </div>
                     <button
                         type="submit"
@@ -94,7 +100,9 @@
                         class="flex-1 px-3 py-3 text-center font-medium text-lg bg-neutral-600 dark:bg-neutral-500 text-white rounded-tl-lg transition-colors"
                         title="Chat"
                     >
-                        💬
+                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
                     </button>
                     <button
                         onclick="switchTab('image')"
@@ -102,7 +110,9 @@
                         class="flex-1 px-3 py-3 text-center font-medium text-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 bg-neutral-50 dark:bg-neutral-700 transition-colors"
                         title="Image Generation"
                     >
-                        🎨
+                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
                     </button>
                     <button
                         onclick="switchTab('tts')"
@@ -110,23 +120,30 @@
                         class="flex-1 px-3 py-3 text-center font-medium text-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 bg-neutral-50 dark:bg-neutral-700 transition-colors"
                         title="Text-to-Speech"
                     >
-                        🔊
+                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 13a2 2 0 0 0 2-2V7a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0V4a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0v-4a2 2 0 0 1 2-2"/>
+                        </svg>
                     </button>
                     <button
                         onclick="switchTab('settings')"
                         id="settingsTab"
-                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 rounded-tr-lg transition-colors"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 bg-neutral-50 dark:bg-neutral-700 rounded-tr-lg transition-colors"
                         title="Settings"
                     >
-                        ⚙️
+                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 7h-9"/>
+                            <path d="M14 17H5"/>
+                            <circle cx="17" cy="17" r="3"/>
+                            <circle cx="7" cy="7" r="3"/>
+                        </svg>
                     </button>
                 </div>
             </div>
 
             <!-- Chat Tab Content -->
-            <div id="chatContent" class="bg-white dark:bg-neutral-800 rounded-b-lg shadow-md transition-colors">
+            <div id="chatContent" class="bg-white dark:bg-neutral-800 rounded-b-lg shadow-md transition-colors h-[600px] flex flex-col">
                 <!-- Chat Settings -->
-                <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
+                <div class="p-4 border-b border-neutral-200 dark:border-neutral-700 flex-shrink-0">
                     <div class="flex space-x-4">
                         <div class="flex-1">
                             <label for="chatModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
@@ -151,7 +168,7 @@
                         <div class="flex items-end">
                             <button
                                 onclick="clearChat()"
-                                class="px-3 py-2 text-sm text-red-600 hover:text-red-700 border border-red-300 rounded-md hover:bg-red-50"
+                                class="px-3 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 border border-red-300 dark:border-red-600 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                             >
                                 Clear
                             </button>
@@ -160,16 +177,16 @@
                 </div>
 
                 <!-- Chat Messages -->
-                <div class="h-96 overflow-y-auto" id="chatMessages">
+                <div class="flex-1 overflow-y-auto min-h-0" id="chatMessages">
                     <div class="p-4">
-                        <div class="text-center text-gray-500 text-sm">
+                        <div class="text-center text-neutral-500 dark:text-neutral-400 text-sm">
                             Start the conversation!
                         </div>
                     </div>
                 </div>
 
                 <!-- Message Input -->
-                <div class="p-4 border-t border-neutral-200 dark:border-neutral-700">
+                <div class="p-4 border-t border-neutral-200 dark:border-neutral-700 flex-shrink-0">
                     <div class="flex space-x-2">
                         <input
                             type="text"
@@ -181,7 +198,7 @@
                         <button
                             onclick="sendMessage()"
                             id="sendButton"
-                            class="bg-neutral-600 dark:bg-neutral-500 text-white px-6 py-2 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-gray-400"
+                            class="bg-neutral-600 dark:bg-neutral-500 text-white px-6 py-2 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-neutral-400"
                         >
                             Send
                         </button>
@@ -268,7 +285,7 @@
                         <button
                             onclick="generateImage()"
                             id="generateButton"
-                            class="w-full bg-neutral-600 dark:bg-neutral-500 text-white py-2 px-4 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-gray-400"
+                            class="w-full bg-neutral-600 dark:bg-neutral-500 text-white py-2 px-4 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-neutral-400"
                         >
                             Generate Image
                         </button>
@@ -359,14 +376,14 @@
                             <button
                                 onclick="generateSpeech()"
                                 id="generateSpeechButton"
-                                class="flex-1 bg-neutral-600 dark:bg-neutral-500 text-white py-2 px-4 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-gray-400"
+                                class="flex-1 bg-neutral-600 dark:bg-neutral-500 text-white py-2 px-4 rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium disabled:bg-neutral-400"
                             >
                                 Generate Speech
                             </button>
                             <button
                                 onclick="previewVoice()"
                                 id="previewButton"
-                                class="px-4 py-2 border border-neutral-600 dark:border-neutral-500 text-neutral-600 dark:text-neutral-300 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors font-medium disabled:bg-gray-100 disabled:text-gray-400"
+                                class="px-4 py-2 border border-neutral-600 dark:border-neutral-500 text-neutral-600 dark:text-neutral-300 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors font-medium disabled:bg-neutral-100 disabled:text-neutral-400"
                             >
                                 Preview Voice
                             </button>
@@ -375,31 +392,31 @@
                 </div>
 
                 <!-- Generated Audio -->
-                <div id="audioResults" class="p-4 border-t border-gray-200">
-                    <div class="text-center text-gray-500 text-sm">
+                <div id="audioResults" class="p-4 border-t border-neutral-200">
+                    <div class="text-center text-neutral-500 text-sm">
                         Generated audio will appear here
                     </div>
                 </div>
             </div>
 
             <!-- Settings Tab Content -->
-            <div id="settingsContent" class="hidden bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+            <div id="settingsContent" class="hidden bg-white dark:bg-neutral-800 rounded-b-lg shadow-md transition-colors">
                 <div class="p-6 space-y-6">
                     <!-- API Key Management -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🔑 API Key Management</h3>
+                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">🔑 API Key Management</h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                     Current API Key Status
                                 </label>
-                                <div id="apiKeyStatus" class="p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+                                <div id="apiKeyStatus" class="p-3 bg-neutral-50 dark:bg-neutral-700 rounded-md">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-sm text-gray-600 dark:text-gray-300" id="apiKeyDisplay">No API key stored</span>
+                                        <span class="text-sm text-neutral-600 dark:text-neutral-300" id="apiKeyDisplay">No API key stored</span>
                                         <button
                                             onclick="revokeApiKey()"
                                             id="revokeButton"
-                                            class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors disabled:bg-gray-400"
+                                            class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors disabled:bg-neutral-400"
                                             disabled
                                         >
                                             Revoke
@@ -560,9 +577,9 @@
                 const btn = document.getElementById(btnId);
                 if (btn) {
                     if (themes[index] === currentTheme) {
-                        btn.className = btn.className.replace(/bg-white|bg-gray-700/, 'bg-blue-600').replace(/dark:bg-gray-700|dark:bg-blue-500/, 'dark:bg-blue-500').replace(/text-gray-700|text-gray-300/, 'text-white');
+                        btn.className = btn.className.replace(/bg-white|bg-neutral-700/, 'bg-blue-600').replace(/dark:bg-neutral-700|dark:bg-blue-500/, 'dark:bg-blue-500').replace(/text-neutral-700|text-neutral-300/, 'text-white');
                     } else {
-                        btn.className = btn.className.replace(/bg-blue-600|dark:bg-blue-500/, 'bg-white dark:bg-gray-700').replace(/text-white/, 'text-gray-700 dark:text-gray-300');
+                        btn.className = btn.className.replace(/bg-blue-600|dark:bg-blue-500/, 'bg-white dark:bg-neutral-700').replace(/text-white/, 'text-neutral-700 dark:text-neutral-300');
                     }
                 }
             });
@@ -1010,7 +1027,7 @@
             } else if (role === 'assistant') {
                 messageDiv.className = 'mb-4 flex justify-start px-4';
                 messageDiv.innerHTML = `
-                    <div class="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg max-w-xs lg:max-w-md">
+                    <div class="bg-neutral-200 text-neutral-900 px-4 py-2 rounded-lg max-w-xs lg:max-w-md">
                         ${formatAssistantMessage(content)}
                     </div>
                 `;
@@ -1032,7 +1049,7 @@
             return escapeHtml(content)
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/`(.*?)`/g, '<code class="bg-gray-300 px-1 rounded">$1</code>')
+                .replace(/`(.*?)`/g, '<code class="bg-neutral-300 px-1 rounded">$1</code>')
                 .replace(/\n/g, '<br>');
         }
 
@@ -1065,7 +1082,7 @@
                 const chatMessages = document.getElementById('chatMessages');
                 chatMessages.innerHTML = `
                     <div class="p-4">
-                        <div class="text-center text-gray-500 text-sm">
+                        <div class="text-center text-neutral-500 text-sm">
                             Chat cleared. Start a new conversation!
                         </div>
                     </div>
@@ -1148,21 +1165,21 @@
             }
 
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'mb-6 p-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 transition-colors';
+            resultDiv.className = 'mb-6 p-4 border border-neutral-200 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 transition-colors';
 
             const timestamp = new Date().toLocaleString();
             const formatInfo = isBase64 ? 'Base64 (Permanent)' : 'URL (60min expiry)';
 
             resultDiv.innerHTML = `
                 <div class="mb-3">
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Generated Image</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1"><strong>Your prompt:</strong> ${escapeHtml(originalPrompt)}</p>
+                    <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Generated Image</h4>
+                    <p class="text-sm text-neutral-600 dark:text-neutral-300 mb-1"><strong>Your prompt:</strong> ${escapeHtml(originalPrompt)}</p>
                     ${revisedPrompt && revisedPrompt !== originalPrompt ?
-                        `<p class="text-sm text-gray-600 dark:text-gray-300 mb-1"><strong>Revised prompt:</strong> ${escapeHtml(revisedPrompt)}</p>` : ''
+                        `<p class="text-sm text-neutral-600 dark:text-neutral-300 mb-1"><strong>Revised prompt:</strong> ${escapeHtml(revisedPrompt)}</p>` : ''
                     }
-                    <p class="text-sm text-gray-500 dark:text-gray-400"><strong>Format:</strong> ${formatInfo} • ${timestamp}</p>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400"><strong>Format:</strong> ${formatInfo} • ${timestamp}</p>
                 </div>
-                <div class="flex justify-center bg-gray-50 dark:bg-gray-600 rounded-lg p-2">
+                <div class="flex justify-center bg-neutral-50 dark:bg-neutral-600 rounded-lg p-2">
                     <img src="${imageUrl}" alt="Generated image" class="max-w-full h-auto rounded-lg shadow-md" style="max-height: 400px;">
                 </div>
                 <div class="mt-3 flex justify-center space-x-2">
@@ -1319,18 +1336,18 @@
             }
 
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'mb-6 p-4 border border-gray-200 rounded-lg';
+            resultDiv.className = 'mb-6 p-4 border border-neutral-200 rounded-lg';
 
             const timestamp = new Date().toLocaleString();
 
             resultDiv.innerHTML = `
                 <div class="mb-3">
-                    <h4 class="font-medium text-gray-900 mb-2">Generated Audio</h4>
-                    <p class="text-sm text-gray-600 mb-1"><strong>Text:</strong> ${escapeHtml(text.substring(0, 100))}${text.length > 100 ? '...' : ''}</p>
-                    <p class="text-sm text-gray-600 mb-1"><strong>Settings:</strong> ${model}, ${voice}, ${speed}x speed</p>
-                    <p class="text-sm text-gray-500"><strong>Generated:</strong> ${timestamp}</p>
+                    <h4 class="font-medium text-neutral-900 mb-2">Generated Audio</h4>
+                    <p class="text-sm text-neutral-600 mb-1"><strong>Text:</strong> ${escapeHtml(text.substring(0, 100))}${text.length > 100 ? '...' : ''}</p>
+                    <p class="text-sm text-neutral-600 mb-1"><strong>Settings:</strong> ${model}, ${voice}, ${speed}x speed</p>
+                    <p class="text-sm text-neutral-500"><strong>Generated:</strong> ${timestamp}</p>
                 </div>
-                <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                <div class="bg-neutral-50 rounded-lg p-3 mb-3">
                     <audio controls class="w-full">
                         <source src="${audioUrl}" type="audio/mpeg">
                         Your browser does not support the audio element.
