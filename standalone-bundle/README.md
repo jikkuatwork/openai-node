@@ -52,61 +52,123 @@ web development.
 
 ## 📝 Usage
 
-### Basic HTML Usage
+The enhanced build script now generates **three bundle formats** for maximum compatibility and developer experience:
 
-Include either the unminified or minified bundle from the versioned `dist/`
-folder (or use `v-latest` to always get the latest):
+### 🎯 Bundle Formats
+
+| Format | File | Best For | Import Style |
+|--------|------|----------|-------------|
+| **ESM** | `openai-sdk.esm.js` | Modern browsers, native imports | `import OpenAI from './openai-sdk.esm.js'` |
+| **IIFE** | `openai-sdk.js` | Legacy support, script tags | `const { default: OpenAI } = OpenAIBundle` |
+| **UMD** | `openai-sdk.umd.js` | Universal compatibility | Works in both environments |
+
+All formats are available minified (`.min.js`) for production use.
+
+### 🚀 ESM Usage (Recommended - Native ES6 Imports!)
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>OpenAI SDK Bundle</title>
-  <!-- Unminified (for debugging) -->
-  <script src="dist/v-<version>/openai-sdk.js"></script>
-  <!-- Minified (for production) -->
-  <script src="dist/v-<version>/openai-sdk.min.js"></script>
-  <!-- Or use the `v-latest` alias to always reference the most recent bundle -->
-  <script src="dist/v-latest/openai-sdk.min.js"></script>
+  <title>OpenAI SDK - ESM</title>
 </head>
 <body>
-<script>
-  // Access the SDK via the global OpenAIBundle
-  const { default: OpenAI, toFile } = OpenAIBundle;
+<script type="module">
+  // 🎉 Native ES6 import syntax!
+  import OpenAI, { toFile, APIError } from 'https://cdn.toolbomber.com/libs/openai-sdk/v-latest/openai-sdk.esm.min.js';
 
   const client = new OpenAI({
-    apiKey: 'sk-...',              // Your API key
-    dangerouslyAllowBrowser: true  // Required for browser usage
+    apiKey: 'sk-...',
+    dangerouslyAllowBrowser: true
   });
 
-  async function chat() {
-    const response = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: 'Hello from the bundle!' }]
-    });
-    console.log(response.choices[0].message.content);
-  }
-
-  chat();
+  const response = await client.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: 'Hello from ESM bundle!' }]
+  });
+  
+  console.log(response.choices[0].message.content);
 </script>
 </body>
 </html>
 ```
 
-### Available Exports
+### 📜 IIFE Usage (Legacy Compatible)
 
-All exports from the original SDK are available via the `OpenAIBundle` global:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OpenAI SDK - IIFE</title>
+  <script src="https://cdn.toolbomber.com/libs/openai-sdk/v-latest/openai-sdk.min.js"></script>
+</head>
+<body>
+<script>
+  // Traditional global access (backwards compatible)
+  const { default: OpenAI, toFile } = OpenAIBundle;
+
+  const client = new OpenAI({
+    apiKey: 'sk-...',
+    dangerouslyAllowBrowser: true
+  });
+
+  // Same API as ESM version
+</script>
+</body>
+</html>
+```
+
+### 🌍 UMD Usage (Universal)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OpenAI SDK - UMD</title>
+  <script src="https://cdn.toolbomber.com/libs/openai-sdk/v-latest/openai-sdk.umd.min.js"></script>
+</head>
+<body>
+<script>
+  // UMD: Available as global OpenAI
+  const { default: OpenAI, toFile } = window.OpenAI;
+
+  const client = new OpenAI({
+    apiKey: 'sk-...',
+    dangerouslyAllowBrowser: true
+  });
+
+  // Same API across all formats
+</script>
+</body>
+</html>
+```
+
+### 📦 Available Exports
+
+All exports from the original SDK are available in every bundle format:
 
 ```javascript
-const {
-  default: OpenAI, // Main client constructor
-  toFile, // File upload helper
-  APIError, // Error classes
+// ESM style
+import OpenAI, { 
+  toFile,
+  APIError,
   APIConnectionError,
   APIUserAbortError,
   // ... all other exports
-} = OpenAIBundle;
+} from 'https://cdn.toolbomber.com/libs/openai-sdk/v-latest/openai-sdk.esm.min.js';
+
+// IIFE/UMD style
+const {
+  default: OpenAI,
+  toFile,
+  APIError,
+  APIConnectionError,
+  APIUserAbortError,
+  // ... all other exports
+} = OpenAIBundle; // or window.OpenAI for UMD
 ```
 
 ## 🔄 Updating the Bundle
@@ -130,6 +192,58 @@ const {
    cd standalone-bundle
    npm run build
    ```
+
+## 🚀 CDN Deployment
+
+The bundle includes an automated deployment script for CDN repositories:
+
+### Deploy Commands
+
+```bash
+# Deploy to CDN (commit only, manual push)
+npm run deploy
+
+# Deploy and automatically push to remote
+npm run deploy:push
+
+# Force overwrite existing version and push
+npm run deploy:force
+```
+
+### CDN Setup Requirements
+
+1. **CDN Repository Structure**:
+   ```
+   ../cdn/
+   ├── libs/
+   │   └── openai-sdk/
+   │       ├── v-5.1.0/          # Version directories
+   │       └── v-latest -> v-5.1.0  # Symlink to latest
+   └── .git/                     # Must be a git repository
+   ```
+
+2. **Deployment Process**:
+   - Copies all bundle formats to `../cdn/libs/openai-sdk/v-{version}/`
+   - Updates `v-latest` symlink to point to new version
+   - Commits changes with descriptive message
+   - Optionally pushes to remote (with `--push` flag)
+
+3. **Generated CDN URLs**:
+   ```
+   https://cdn.toolbomber.com/libs/openai-sdk/v-5.1.0/openai-sdk.min.js
+   https://cdn.toolbomber.com/libs/openai-sdk/v-5.1.0/openai-sdk.esm.min.js
+   https://cdn.toolbomber.com/libs/openai-sdk/v-5.1.0/openai-sdk.umd.min.js
+   https://cdn.toolbomber.com/libs/openai-sdk/v-latest/openai-sdk.min.js
+   ```
+
+### Deploy Script Features
+
+- ✅ **Version Management**: Automatically uses SDK version
+- ✅ **Safety Checks**: Confirms before overwriting existing versions
+- ✅ **Format Support**: Deploys all bundle formats (ESM, IIFE, UMD)
+- ✅ **Git Integration**: Commits and pushes changes automatically
+- ✅ **Symlink Management**: Updates `v-latest` pointer
+- ✅ **Rollback Safety**: Preserves previous versions
 
 ### Automated Update Script (Optional)
 

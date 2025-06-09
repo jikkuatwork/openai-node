@@ -5,9 +5,15 @@
   "description": "Standalone bundle builder for OpenAI SDK",
   "scripts": {
     "build": "node build.js",
-    "build:watch": "node build.js --watch"
+    "build:watch": "node build.js --watch",
+    "deploy": "node deploy.js",
+    "deploy:push": "node deploy.js --push",
+    "deploy:force": "node deploy.js --force --push"
   },
   "devDependencies": {
     "esbuild": "^0.19.0"
+  },
+  "dependencies": {
+    "readline-sync": "^1.4.10"
   }
 }
