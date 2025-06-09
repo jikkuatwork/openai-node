@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenAI Chat - Standalone Bundle Demo</title>
-    <meta name="description" content="Zero-build OpenAI SDK integration with native ES6 imports">
+    <title>Vanilla AI</title>
+    <meta name="description" content="Build free, standalone OpenAI SDK">
     <meta name="theme-color" content="#2563eb">
 
     <!-- Inline favicon (chat bubble icon) -->
@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%232563eb'%3E%3Cpath d='M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z'/%3E%3C/svg%3E">
 
     <!-- Inline manifest for PWA support -->
-    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22OpenAI%20Playground%22%2C%22short_name%22%3A%22OpenAI%22%2C%22description%22%3A%22Zero-build%20OpenAI%20SDK%20integration%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%3D%27http%3A//www.w3.org/2000/svg%27%2520viewBox%3D%270%25200%252020%252020%27%2520fill%3D%27%25232563eb%27%253E%253Cpath%2520d%3D%27M2%25205a2%25202%25200%2520012-2h7a2%25202%25200%2520012%25202v4a2%25202%25200%252001-2%25202H9l-3%25203v-3H4a2%25202%25200%252001-2-2V5z%27/%253E%253C/svg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image/svg%2Bxml%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Vanilla%20AI%22%2C%22short_name%22%3A%22Vanilla%20AI%22%2C%22description%22%3A%22Build%20free%2C%20standalone%20OpenAI%20SDK%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%3D%27http%3A//www.w3.org/2000/svg%27%2520viewBox%3D%270%25200%252020%252020%27%2520fill%3D%27%25232563eb%27%253E%253Cpath%2520d%3D%27M2%25205a2%25202%25200%2520012-2h7a2%25202%25200%2520012%25202v4a2%25202%25200%252001-2%25202H9l-3%25203v-3H4a2%25202%25200%252001-2-2V5z%27/%253E%253C/svg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image/svg%2Bxml%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -21,9 +21,9 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
+<body class="bg-neutral-50 dark:bg-neutral-900 min-h-screen transition-colors">
     <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors">
+    <header class="bg-white dark:bg-neutral-800 shadow-sm border-b border-neutral-200 dark:border-neutral-700 transition-colors">
         <div class="max-w-4xl mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
@@ -31,29 +31,17 @@
                         <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
                     </svg>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">OpenAI Playground</h1>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">Zero-build OpenAI SDK integration</p>
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Vanilla AI</h1>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm mt-1">Build free, standalone OpenAI SDK</p>
                     </div>
                 </div>
-                <button
-                    onclick="toggleDarkMode()"
-                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                    title="Toggle dark mode"
-                >
-                    <svg id="lightIcon" class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
-                    </svg>
-                    <svg id="darkIcon" class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-                    </svg>
-                </button>
             </div>
         </div>
     </header>
 
     <div class="max-w-4xl mx-auto px-4 py-6">
         <!-- API Key Setup -->
-        <div id="setup" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 transition-colors">
+        <div id="setup" class="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6 mb-6 transition-colors">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🔑 Setup</h2>
             <form onsubmit="initializeApp(); return false;">
                 <div class="space-y-4">
@@ -98,12 +86,12 @@
         <!-- Main App Interface -->
         <div id="appContainer" class="hidden">
             <!-- Tabs -->
-            <div class="bg-white dark:bg-gray-800 rounded-t-lg shadow-md transition-colors">
-                <div class="flex border-b border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-neutral-800 rounded-t-lg shadow-md transition-colors">
+                <div class="flex border-b border-neutral-200 dark:border-neutral-700">
                     <button
                         onclick="switchTab('chat')"
                         id="chatTab"
-                        class="flex-1 px-3 py-3 text-center font-medium text-lg bg-blue-600 dark:bg-blue-500 text-white rounded-tl-lg transition-colors"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg bg-neutral-600 dark:bg-neutral-500 text-white rounded-tl-lg transition-colors"
                         title="Chat"
                     >
                         💬
@@ -111,7 +99,7 @@
                     <button
                         onclick="switchTab('image')"
                         id="imageTab"
-                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 transition-colors"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 bg-neutral-50 dark:bg-neutral-700 transition-colors"
                         title="Image Generation"
                     >
                         🎨
@@ -119,7 +107,7 @@
                     <button
                         onclick="switchTab('tts')"
                         id="ttsTab"
-                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 transition-colors"
+                        class="flex-1 px-3 py-3 text-center font-medium text-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 bg-neutral-50 dark:bg-neutral-700 transition-colors"
                         title="Text-to-Speech"
                     >
                         🔊
@@ -136,17 +124,17 @@
             </div>
 
             <!-- Chat Tab Content -->
-            <div id="chatContent" class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
+            <div id="chatContent" class="bg-white dark:bg-neutral-800 rounded-b-lg shadow-md transition-colors">
                 <!-- Chat Settings -->
-                <div class="p-4 border-b border-gray-200">
+                <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
                     <div class="flex space-x-4">
                         <div class="flex-1">
-                            <label for="chatModel" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label for="chatModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Model
                             </label>
                             <select
                                 id="chatModel"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
                             >
                                 <option value="gpt-4o-mini">GPT-4o Mini</option>
                                 <option value="gpt-4o">GPT-4o</option>
@@ -291,7 +279,7 @@
             <!-- TTS Tab Content -->
             <div id="ttsContent" class="hidden bg-white dark:bg-gray-800 rounded-b-lg shadow-md transition-colors">
                 <!-- TTS Settings -->
-                <div class="p-4 border-b border-gray-200">
+                <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label for="ttsModel" class="block text-sm font-medium text-gray-700 mb-1">
@@ -745,7 +733,7 @@
             const settingsContent = document.getElementById('settingsContent');
 
             // Reset all tabs to inactive state
-            const inactiveClass = 'flex-1 px-3 py-3 text-center font-medium text-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-50 dark:bg-gray-700 transition-colors';
+            const inactiveClass = 'flex-1 px-3 py-3 text-center font-medium text-lg text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 bg-neutral-50 dark:bg-neutral-700 transition-colors';
 
             chatTab.className = inactiveClass + ' rounded-tl-lg';
             imageTab.className = inactiveClass;
@@ -759,19 +747,19 @@
             settingsContent.classList.add('hidden');
 
             if (tab === 'chat') {
-                chatTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-blue-600 dark:bg-blue-500 text-white rounded-tl-lg transition-colors';
+                chatTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-neutral-600 dark:bg-neutral-500 text-white rounded-tl-lg transition-colors';
                 chatContent.classList.remove('hidden');
                 setTimeout(() => document.getElementById('messageInput')?.focus(), 100);
             } else if (tab === 'image') {
-                imageTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-purple-600 dark:bg-purple-500 text-white transition-colors';
+                imageTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-neutral-600 dark:bg-neutral-500 text-white transition-colors';
                 imageContent.classList.remove('hidden');
                 setTimeout(() => document.getElementById('imagePrompt')?.focus(), 100);
             } else if (tab === 'tts') {
-                ttsTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-green-600 dark:bg-green-500 text-white transition-colors';
+                ttsTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-neutral-600 dark:bg-neutral-500 text-white transition-colors';
                 ttsContent.classList.remove('hidden');
                 setTimeout(() => document.getElementById('ttsText')?.focus(), 100);
             } else if (tab === 'settings') {
-                settingsTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-gray-600 dark:bg-gray-500 text-white rounded-tr-lg transition-colors';
+                settingsTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-neutral-600 dark:bg-neutral-500 text-white rounded-tr-lg transition-colors';
                 settingsContent.classList.remove('hidden');
                 updateApiKeyStatus();
                 updateThemeButtons(localStorage.getItem('openai-theme') || 'auto');
