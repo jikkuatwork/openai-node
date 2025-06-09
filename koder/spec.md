@@ -11,15 +11,7 @@ Refine the UI in `../standalone-bundle/index.html`
 
 1. Dark Mode
 
-- many text & input boxes still has wrong colors
-
-2. Colors / Themes
-
-- Avoid using different colors for tabs, use a single theme color throughout
-- use `bg-neutral` themes for background
-- settings is still yet to change
-- avoid Emojis in the app
-- use feather icons
+- text inside dropdowns still has wrong colors
 
 3. Settings Screen
 
@@ -27,15 +19,7 @@ Refine the UI in `../standalone-bundle/index.html`
 - We need to refine it, simplify it and avoid redundant fields
 - Fix alignment issues
 
-4. NavBar
+4. Scrollbars
 
-- Avoid theme switcher there, its already there in settings
-
-5. Meta
-
-- Name: Vanilla AI
-- Change description to: `OpenAI bundle-less Standalone JS SDK`
-
-6. PWA
-
-- Make it PWA
+- All Scrollbars should scroll above content and not take up extra space causing
+  layout janks
