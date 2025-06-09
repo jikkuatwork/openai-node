@@ -17,6 +17,9 @@ Refine the UI in `../standalone-bundle/index.html`
 
 - Avoid using different colors for tabs, use a single theme color throughout
 - use `bg-neutral` themes for background
+- settings is still yet to change
+- avoid Emojis in the app
+- use feather icons
 
 3. Settings Screen
 
@@ -31,4 +34,8 @@ Refine the UI in `../standalone-bundle/index.html`
 5. Meta
 
 - Name: Vanilla AI
-- Description: Build free, standalone alone OpenAI SDK
+- Change description to: `OpenAI bundle-less Standalone JS SDK`
+
+6. PWA
+
+- Make it PWA
