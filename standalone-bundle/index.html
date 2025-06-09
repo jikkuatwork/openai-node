@@ -143,36 +143,47 @@
             <!-- Chat Tab Content -->
             <div id="chatContent" class="bg-white dark:bg-neutral-800 rounded-b-lg shadow-md transition-colors h-[600px] flex flex-col">
                 <!-- Chat Settings -->
-                <div class="p-4 border-b border-neutral-200 dark:border-neutral-700 flex-shrink-0">
-                    <div class="flex space-x-4">
+                <div class="px-4 py-2 border-b border-neutral-200 dark:border-neutral-700 flex-shrink-0">
+                    <div class="flex items-center space-x-3">
                         <div class="flex-1">
-                            <label for="chatModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                                Model
-                            </label>
                             <div class="relative">
-                                <select
-                                    id="chatModel"
-                                    class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                                    onchange="handleModelChange()"
-                                >
+                                <!-- Searchable Model Dropdown -->
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        id="modelSearch"
+                                        placeholder="Select a model..."
+                                        class="w-full px-3 py-1.5 pr-8 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
+                                        onclick="openModelDropdown()"
+                                        onkeyup="filterModels()"
+                                        onkeydown="handleSearchKeydown(event)"
+                                        autocomplete="off"
+                                    >
+                                    <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                                
+                                <!-- Dropdown List -->
+                                <div id="modelDropdown" class="hidden absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                    <div id="modelList" class="py-1">
+                                        <div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">Loading models...</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Hidden inputs for compatibility -->
+                                <select id="chatModel" class="hidden">
                                     <option value="">Loading models...</option>
                                 </select>
-                                <input
-                                    type="text"
-                                    id="customModel"
-                                    placeholder="Enter model name..."
-                                    class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors hidden"
-                                >
+                                <input type="text" id="customModel" class="hidden">
                             </div>
                         </div>
-                        <div class="flex items-end">
-                            <button
-                                onclick="clearChat()"
-                                class="px-3 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 border border-red-300 dark:border-red-600 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                            >
-                                Clear
-                            </button>
-                        </div>
+                        <button
+                            onclick="clearChat()"
+                            class="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                        >
+                            Clear
+                        </button>
                     </div>
                 </div>
 
@@ -202,9 +213,6 @@
                         >
                             Send
                         </button>
-                    </div>
-                    <div class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-                        Press Enter to send
                     </div>
                 </div>
             </div>
@@ -698,19 +706,125 @@
             }
         }
 
+        // New searchable dropdown functions
+        let allModels = [];
+        let selectedModel = '';
+        let isDropdownOpen = false;
+
+        window.openModelDropdown = function() {
+            const dropdown = document.getElementById('modelDropdown');
+            const searchInput = document.getElementById('modelSearch');
+            
+            dropdown.classList.remove('hidden');
+            isDropdownOpen = true;
+            
+            // If there's a selected model, show it but allow filtering
+            if (selectedModel && searchInput.value === selectedModel) {
+                searchInput.value = '';
+                filterModels();
+            }
+            
+            searchInput.focus();
+        }
+
+        window.filterModels = function() {
+            const searchInput = document.getElementById('modelSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            if (searchTerm === '') {
+                displayModels(allModels);
+            } else {
+                const filtered = allModels.filter(model => 
+                    model.id.toLowerCase().includes(searchTerm)
+                );
+                displayModels(filtered);
+            }
+        }
+
+        window.handleSearchKeydown = function(event) {
+            if (event.key === 'Escape') {
+                closeDropdown();
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                // Select first filtered result if any
+                const modelList = document.getElementById('modelList');
+                const firstModel = modelList.querySelector('[data-model-id]');
+                if (firstModel) {
+                    selectModel(firstModel.getAttribute('data-model-id'));
+                }
+            }
+        }
+
+        function closeDropdown() {
+            const dropdown = document.getElementById('modelDropdown');
+            const searchInput = document.getElementById('modelSearch');
+            
+            dropdown.classList.add('hidden');
+            isDropdownOpen = false;
+            
+            // Restore selected model or clear if none selected
+            if (selectedModel) {
+                searchInput.value = selectedModel;
+            } else {
+                searchInput.value = '';
+                searchInput.placeholder = 'Select a model...';
+            }
+        }
+
+        function displayModels(models) {
+            const modelList = document.getElementById('modelList');
+            modelList.innerHTML = '';
+
+            if (models.length === 0) {
+                modelList.innerHTML = '<div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">No models found</div>';
+                return;
+            }
+
+            models.forEach((model, index) => {
+                const modelItem = document.createElement('div');
+                modelItem.className = 'px-3 py-2 text-sm cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors';
+                modelItem.textContent = model.id;
+                modelItem.setAttribute('data-model-id', model.id);
+                modelItem.onclick = () => selectModel(model.id);
+                
+                // Highlight selected model
+                if (model.id === selectedModel) {
+                    modelItem.classList.add('bg-neutral-100', 'dark:bg-neutral-600');
+                }
+                
+                modelList.appendChild(modelItem);
+            });
+        }
+
+        function selectModel(modelId) {
+            selectedModel = modelId;
+            document.getElementById('modelSearch').value = modelId;
+            document.getElementById('chatModel').value = modelId;
+            closeDropdown();
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('modelDropdown');
+            const searchInput = document.getElementById('modelSearch');
+            
+            if (!dropdown.contains(event.target) && !searchInput.contains(event.target)) {
+                closeDropdown();
+            }
+        });
+
         async function loadAvailableModels() {
             if (!client) return;
             
-            const modelSelect = document.getElementById('chatModel');
-            modelSelect.innerHTML = '<option value="">Loading models...</option>';
+            const modelList = document.getElementById('modelList');
+            const modelSearch = document.getElementById('modelSearch');
+            modelList.innerHTML = '<div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">Loading models...</div>';
+            modelSearch.placeholder = 'Loading models...';
             
             try {
                 console.log('🔍 Fetching available models...');
                 const models = await client.models.list();
                 console.log('✅ Models fetched:', models.data.length);
-                
-                // Clear loading option
-                modelSelect.innerHTML = '';
                 
                 // Filter and sort models (prioritize chat/instruct models)
                 const sortedModels = models.data
@@ -732,23 +846,16 @@
                         return priority(a.id) - priority(b.id) || a.id.localeCompare(b.id);
                     });
                 
-                // Add model options
-                sortedModels.forEach(model => {
-                    const option = document.createElement('option');
-                    option.value = model.id;
-                    option.textContent = model.id;
-                    modelSelect.appendChild(option);
-                });
+                // Store models globally for filtering
+                allModels = sortedModels;
                 
-                // Add custom model option
-                const customOption = document.createElement('option');
-                customOption.value = 'custom';
-                customOption.textContent = '✏️ Enter custom model...';
-                modelSelect.appendChild(customOption);
+                // Display models in dropdown
+                displayModels(sortedModels);
                 
-                // Select first available model
+                // Update placeholder and select first model
                 if (sortedModels.length > 0) {
-                    modelSelect.value = sortedModels[0].id;
+                    modelSearch.placeholder = 'Select a model...';
+                    selectModel(sortedModels[0].id);
                     console.log('🎯 Default model selected:', sortedModels[0].id);
                 }
                 
@@ -759,30 +866,34 @@
                 const isNebius = client.baseURL?.includes('nebius');
                 const isLocal = client.baseURL?.includes('localhost') || client.baseURL?.includes('127.0.0.1');
                 
-                let fallbackModels = '';
+                let fallbackModels = [];
                 
                 if (isNebius) {
-                    fallbackModels = `
-                        <option value="deepseek-ai/DeepSeek-R1">DeepSeek R1</option>
-                        <option value="deepseek-ai/DeepSeek-V3">DeepSeek V3</option>
-                        <option value="meta-llama/Meta-Llama-3.1-70B-Instruct">Llama 3.1 70B</option>
-                        <option value="custom">✏️ Enter custom model...</option>
-                    `;
+                    fallbackModels = [
+                        { id: 'deepseek-ai/DeepSeek-R1' },
+                        { id: 'deepseek-ai/DeepSeek-V3' },
+                        { id: 'meta-llama/Meta-Llama-3.1-70B-Instruct' }
+                    ];
                 } else if (isLocal) {
-                    fallbackModels = `
-                        <option value="llama3.2">llama3.2</option>
-                        <option value="mistral">mistral</option>
-                        <option value="custom">✏️ Enter custom model...</option>
-                    `;
+                    fallbackModels = [
+                        { id: 'llama3.2' },
+                        { id: 'mistral' }
+                    ];
                 } else {
-                    fallbackModels = `
-                        <option value="gpt-4o-mini">gpt-4o-mini</option>
-                        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                        <option value="custom">✏️ Enter custom model...</option>
-                    `;
+                    fallbackModels = [
+                        { id: 'gpt-4o-mini' },
+                        { id: 'gpt-3.5-turbo' }
+                    ];
                 }
                 
-                modelSelect.innerHTML = fallbackModels;
+                allModels = fallbackModels;
+                displayModels(fallbackModels);
+                modelSearch.placeholder = 'Select a model...';
+                
+                if (fallbackModels.length > 0) {
+                    selectModel(fallbackModels[0].id);
+                }
+                
                 console.warn('⚠️ Could not load models from API. Using provider-specific fallback options.');
             }
         }
@@ -979,13 +1090,11 @@
                 // Add user message to conversation
                 messages.push({ role: 'user', content: message });
 
-                // Get model from select or custom input
-                const modelSelect = document.getElementById('chatModel');
-                const customModelInput = document.getElementById('customModel');
-                const model = modelSelect.value === 'custom' ? customModelInput.value.trim() : modelSelect.value;
+                // Get model from new searchable dropdown
+                const model = selectedModel || document.getElementById('modelSearch').value.trim();
                 
                 if (!model) {
-                    alert('Please select or enter a model name');
+                    alert('Please select a model');
                     return;
                 }
                 
