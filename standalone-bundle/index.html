@@ -464,67 +464,74 @@
                             </svg>
                             API Management
                         </h3>
-                        <div class="space-y-4">
+                        <div class="space-y-6">
+                            <!-- API Key Field -->
                             <div>
                                 <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                    Current API Key Status
+                                    Key
                                 </label>
-                                <div id="apiKeyStatus" class="p-3 bg-neutral-50 dark:bg-neutral-700 rounded-md">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm text-neutral-600 dark:text-neutral-300" id="apiKeyDisplay">No API key stored</span>
-                                        <button
-                                            onclick="revokeApiKey()"
-                                            id="revokeButton"
-                                            class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors disabled:bg-neutral-400"
-                                            disabled
+                                <div class="flex space-x-2">
+                                    <input
+                                        type="password"
+                                        id="apiKeyField"
+                                        name="password"
+                                        placeholder="sk-..."
+                                        autocomplete="current-password"
+                                        class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
+                                    >
+                                    <button
+                                        onclick="toggleApiKey()"
+                                        id="apiKeyToggle"
+                                        class="px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium"
+                                    >
+                                        Set
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Base URL Field -->
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                    Base URL
+                                </label>
+                                <div class="space-y-2">
+                                    <div class="flex space-x-2">
+                                        <input
+                                            type="url"
+                                            id="baseUrlField"
+                                            placeholder="https://api.openai.com/v1"
+                                            class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
                                         >
-                                            Revoke
+                                        <button
+                                            onclick="toggleBaseUrl()"
+                                            id="baseUrlToggle"
+                                            class="px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium"
+                                        >
+                                            Set
+                                        </button>
+                                    </div>
+                                    <!-- Preset buttons -->
+                                    <div class="flex space-x-2">
+                                        <button
+                                            onclick="setPresetUrl('openai')"
+                                            class="px-3 py-1 text-xs bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                                        >
+                                            openai
+                                        </button>
+                                        <button
+                                            onclick="setPresetUrl('nebius')"
+                                            class="px-3 py-1 text-xs bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                                        >
+                                            nebius
+                                        </button>
+                                        <button
+                                            onclick="setPresetUrl('openrouter')"
+                                            class="px-3 py-1 text-xs bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                                        >
+                                            openrouter
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                <label for="newApiKey" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                    Update API Key
-                                </label>
-                                <form onsubmit="updateApiKey(); return false;" class="flex space-x-2">
-                                    <!-- Hidden username field for accessibility -->
-                                    <input type="text" name="username" autocomplete="username" style="display: none;" readonly>
-                                    <input
-                                        type="password"
-                                        id="newApiKey"
-                                        name="password"
-                                        placeholder="sk-..."
-                                        autocomplete="new-password"
-                                        class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
-                                    >
-                                    <button
-                                        type="submit"
-                                        class="px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors"
-                                    >
-                                        Update
-                                    </button>
-                                </form>
-                            </div>
-                            <div>
-                                <label for="newBaseUrl" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                                    Update Base URL
-                                </label>
-                                <form onsubmit="updateBaseUrl(); return false;" class="flex space-x-2">
-                                    <input
-                                        type="url"
-                                        id="newBaseUrl"
-                                        placeholder="https://api.openai.com/v1"
-                                        class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white transition-colors"
-                                    >
-                                    <button
-                                        type="submit"
-                                        class="px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors"
-                                    >
-                                        Update
-                                    </button>
-                                </form>
-                                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Leave empty to use default OpenAI API endpoint</p>
                             </div>
                         </div>
                     </div>
@@ -583,11 +590,17 @@
                             </svg>
                             About
                         </h3>
-                        <div class="space-y-2 text-sm text-neutral-600 dark:text-neutral-300">
-                            <p><strong>Vanilla AI</strong> - Build free, standalone OpenAI SDK</p>
-                            <p>Models: Chat, Image Generation, Text-to-Speech</p>
-                            <p>Compatible with: OpenAI, Nebius, and other OpenAI-compatible APIs</p>
-                            <p>Built with: OpenAI SDK, Tailwind CSS, Vanilla JS</p>
+                        <div class="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
+                            <p>
+                                <strong>Vanilla AI</strong> is a lightweight, build-free progressive web app that brings the power of OpenAI's API directly to your browser. 
+                                Designed with simplicity in mind, it provides an elegant interface for chat conversations, image generation, and text-to-speech synthesis—all 
+                                without the complexity of build tools or frameworks.
+                            </p>
+                            <p class="mt-3">
+                                Whether you're using OpenAI's official API, Nebius, OpenRouter, or any OpenAI-compatible endpoint, Vanilla AI adapts seamlessly 
+                                to your preferred provider. Experience the full spectrum of AI capabilities through a clean, responsive interface that works 
+                                instantly—no installation, no configuration, just open and create.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -670,8 +683,10 @@
         function loadApiKey() {
             const savedKey = localStorage.getItem('openai-api-key');
             if (savedKey) {
-                document.getElementById('apiKey').value = savedKey;
-                updateApiKeyStatus();
+                const setupApiKey = document.getElementById('apiKey');
+                if (setupApiKey) {
+                    setupApiKey.value = savedKey;
+                }
                 return savedKey;
             }
             return null;
@@ -691,7 +706,6 @@
             if (apiKey !== 'xxxxxxxxxxxxxxxxx') {
                 localStorage.setItem('openai-api-key', apiKey);
             }
-            updateApiKeyStatus();
         }
 
         function saveBaseUrl(baseUrl) {
@@ -703,17 +717,8 @@
         }
 
         function updateApiKeyStatus() {
-            const savedKey = localStorage.getItem('openai-api-key');
-            const display = document.getElementById('apiKeyDisplay');
-            const revokeBtn = document.getElementById('revokeButton');
-
-            if (savedKey) {
-                display.textContent = `API key ending in ...${savedKey.slice(-4)} (stored locally)`;
-                revokeBtn.disabled = false;
-            } else {
-                display.textContent = 'No API key stored';
-                revokeBtn.disabled = true;
-            }
+            // This function is now handled by initializeSettingsFields
+            // Keep for compatibility but make it safe
         }
 
         window.revokeApiKey = function() {
@@ -722,10 +727,11 @@
                 localStorage.removeItem('openai-base-url');
                 document.getElementById('apiKey').value = '';
                 document.getElementById('baseUrl').value = '';
-                document.getElementById('newApiKey').value = '';
-                document.getElementById('newBaseUrl').value = '';
+                const newApiKey = document.getElementById('newApiKey');
+                const newBaseUrl = document.getElementById('newBaseUrl');
+                if (newApiKey) newApiKey.value = '';
+                if (newBaseUrl) newBaseUrl.value = '';
                 client = null;
-                updateApiKeyStatus();
 
                 // Hide app and show setup
                 document.getElementById('appContainer').classList.add('hidden');
@@ -733,30 +739,118 @@
             }
         }
 
-        window.updateApiKey = function() {
-            const newKey = document.getElementById('newApiKey').value.trim() || 'xxxxxxxxxxxxxxxxx';
-
-            saveApiKey(newKey);
-            document.getElementById('apiKey').value = newKey === 'xxxxxxxxxxxxxxxxx' ? '' : newKey;
-            document.getElementById('newApiKey').value = '';
-
-            // Reinitialize client with current base URL
-            const baseUrl = localStorage.getItem('openai-base-url');
-            reinitializeClient(newKey, baseUrl);
-            alert('API key updated successfully!');
+        window.toggleApiKey = function() {
+            const field = document.getElementById('apiKeyField');
+            const button = document.getElementById('apiKeyToggle');
+            const savedKey = localStorage.getItem('openai-api-key');
+            
+            if (savedKey) {
+                // Revoke existing key
+                localStorage.removeItem('openai-api-key');
+                field.value = '';
+                button.textContent = 'Set';
+                button.className = button.className.replace('bg-red-600 hover:bg-red-700', 'bg-neutral-600 dark:bg-neutral-500 hover:bg-neutral-700 dark:hover:bg-neutral-600');
+                
+                // Reinitialize client
+                const baseUrl = localStorage.getItem('openai-base-url');
+                reinitializeClient('xxxxxxxxxxxxxxxxx', baseUrl);
+            } else {
+                // Set new key
+                const newKey = field.value.trim() || 'xxxxxxxxxxxxxxxxx';
+                saveApiKey(newKey);
+                const setupApiKey = document.getElementById('apiKey');
+                if (setupApiKey) {
+                    setupApiKey.value = newKey === 'xxxxxxxxxxxxxxxxx' ? '' : newKey;
+                }
+                
+                button.textContent = 'Revoke';
+                button.className = button.className.replace('bg-neutral-600 dark:bg-neutral-500 hover:bg-neutral-700 dark:hover:bg-neutral-600', 'bg-red-600 hover:bg-red-700');
+                
+                // Reinitialize client with current base URL
+                const baseUrl = localStorage.getItem('openai-base-url');
+                reinitializeClient(newKey, baseUrl);
+            }
         }
 
-        window.updateBaseUrl = function() {
-            const newUrl = document.getElementById('newBaseUrl').value.trim();
+        window.toggleBaseUrl = function() {
+            const field = document.getElementById('baseUrlField');
+            const button = document.getElementById('baseUrlToggle');
+            const savedUrl = localStorage.getItem('openai-base-url');
+            
+            if (savedUrl) {
+                // Revoke existing URL
+                localStorage.removeItem('openai-base-url');
+                field.value = '';
+                button.textContent = 'Set';
+                button.className = button.className.replace('bg-red-600 hover:bg-red-700', 'bg-neutral-600 dark:bg-neutral-500 hover:bg-neutral-700 dark:hover:bg-neutral-600');
+                const setupBaseUrl = document.getElementById('baseUrl');
+                if (setupBaseUrl) {
+                    setupBaseUrl.value = '';
+                }
+                
+                // Reinitialize client
+                const apiKey = localStorage.getItem('openai-api-key') || 'xxxxxxxxxxxxxxxxx';
+                reinitializeClient(apiKey, '');
+            } else {
+                // Set new URL
+                const newUrl = field.value.trim();
+                saveBaseUrl(newUrl);
+                const setupBaseUrl = document.getElementById('baseUrl');
+                if (setupBaseUrl) {
+                    setupBaseUrl.value = newUrl;
+                }
+                
+                button.textContent = 'Revoke';
+                button.className = button.className.replace('bg-neutral-600 dark:bg-neutral-500 hover:bg-neutral-700 dark:hover:bg-neutral-600', 'bg-red-600 hover:bg-red-700');
+                
+                // Reinitialize client with current API key
+                const apiKey = localStorage.getItem('openai-api-key') || 'xxxxxxxxxxxxxxxxx';
+                reinitializeClient(apiKey, newUrl);
+            }
+        }
 
-            saveBaseUrl(newUrl);
-            document.getElementById('baseUrl').value = newUrl;
-            document.getElementById('newBaseUrl').value = '';
+        window.setPresetUrl = function(provider) {
+            const field = document.getElementById('baseUrlField');
+            
+            const presets = {
+                'openai': 'https://api.openai.com/v1',
+                'nebius': 'https://api.studio.nebius.ai/v1',
+                'openrouter': 'https://openrouter.ai/api/v1'
+            };
+            
+            field.value = presets[provider] || '';
+        }
 
-            // Reinitialize client with current API key
-            const apiKey = localStorage.getItem('openai-api-key') || 'xxxxxxxxxxxxxxxxx';
-            reinitializeClient(apiKey, newUrl);
-            alert('Base URL updated successfully!');
+        function initializeSettingsFields() {
+            const apiKeyField = document.getElementById('apiKeyField');
+            const apiKeyToggle = document.getElementById('apiKeyToggle');
+            const baseUrlField = document.getElementById('baseUrlField');
+            const baseUrlToggle = document.getElementById('baseUrlToggle');
+            
+            const savedKey = localStorage.getItem('openai-api-key');
+            const savedUrl = localStorage.getItem('openai-base-url');
+            
+            // Initialize API Key field
+            if (savedKey) {
+                apiKeyField.placeholder = `${savedKey.slice(0, 8)}...${savedKey.slice(-4)}`;
+                apiKeyToggle.textContent = 'Revoke';
+                apiKeyToggle.className = 'px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium';
+            } else {
+                apiKeyField.placeholder = 'sk-...';
+                apiKeyToggle.textContent = 'Set';
+                apiKeyToggle.className = 'px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium';
+            }
+            
+            // Initialize Base URL field
+            if (savedUrl) {
+                baseUrlField.value = savedUrl;
+                baseUrlToggle.textContent = 'Revoke';
+                baseUrlToggle.className = 'px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium';
+            } else {
+                baseUrlField.value = '';
+                baseUrlToggle.textContent = 'Set';
+                baseUrlToggle.className = 'px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors font-medium';
+            }
         }
 
         window.handleModelChange = function() {
@@ -1124,12 +1218,8 @@
             } else if (tab === 'settings') {
                 settingsTab.className = 'flex-1 px-3 py-3 text-center font-medium text-lg bg-neutral-600 dark:bg-neutral-500 text-white rounded-tr-lg transition-colors';
                 settingsContent.classList.remove('hidden');
-                updateApiKeyStatus();
+                initializeSettingsFields();
                 updateThemeButtons(localStorage.getItem('openai-theme') || 'auto');
-
-                // Populate current values in settings
-                const currentUrl = localStorage.getItem('openai-base-url') || '';
-                document.getElementById('newBaseUrl').value = currentUrl;
             }
         }
 
@@ -1718,8 +1808,7 @@
                 }
             }
 
-            // Initialize API key status for settings
-            updateApiKeyStatus();
+            // Settings are initialized when switching to settings tab
         });
     </script>
 </body>
