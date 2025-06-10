@@ -7,12 +7,12 @@
     <meta name="description" content="Build free, standalone OpenAI SDK">
     <meta name="theme-color" content="#2563eb">
 
-    <!-- Inline favicon (chat bubble icon) -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%232563eb'%3E%3Cpath d='M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%232563eb'%3E%3Cpath d='M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z'/%3E%3C/svg%3E">
+    <!-- Inline favicon (ice cream cone icon) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 11 4.08 10.35a1 1 0 0 0 1.84 0L17 11'/%3E%3Cpath d='M17 7A5 5 0 0 0 7 7'/%3E%3Cpath d='M17 7a2 2 0 0 1 0 4H7a2 2 0 0 1 0-4'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 11 4.08 10.35a1 1 0 0 0 1.84 0L17 11'/%3E%3Cpath d='M17 7A5 5 0 0 0 7 7'/%3E%3Cpath d='M17 7a2 2 0 0 1 0 4H7a2 2 0 0 1 0-4'/%3E%3C/svg%3E">
 
     <!-- Inline manifest for PWA support -->
-    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Vanilla%20AI%22%2C%22short_name%22%3A%22Vanilla%20AI%22%2C%22description%22%3A%22Build%20free%2C%20standalone%20OpenAI%20SDK%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%3D%27http%3A//www.w3.org/2000/svg%27%2520viewBox%3D%270%25200%252020%252020%27%2520fill%3D%27%25232563eb%27%253E%253Cpath%2520d%3D%27M2%25205a2%25202%25200%2520012-2h7a2%25202%25200%2520012%25202v4a2%25202%25200%252001-2%25202H9l-3%25203v-3H4a2%25202%25200%252001-2-2V5z%27/%253E%253C/svg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image/svg%2Bxml%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Vanilla%20AI%22%2C%22short_name%22%3A%22Vanilla%20AI%22%2C%22description%22%3A%22Build%20free%2C%20standalone%20OpenAI%20SDK%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%3D%27http%3A//www.w3.org/2000/svg%27%2520viewBox%3D%270%25200%252024%252024%27%2520fill%3D%27none%27%2520stroke%3D%27%25232563eb%27%2520stroke-width%3D%272%27%2520stroke-linecap%3D%27round%27%2520stroke-linejoin%3D%27round%27%253E%253Cpath%2520d%3D%27m7%252011%25204.08%252010.35a1%25201%25200%25200%25200%25201.84%25200L17%252011%27/%253E%253Cpath%2520d%3D%27M17%25207A5%25205%25200%25200%25200%25207%25207%27/%253E%253Cpath%2520d%3D%27M17%25207a2%25202%25200%25200%25201%25200%25204H7a2%25202%25200%25200%25201%25200-4%27/%253E%253C/svg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image/svg%2Bxml%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -20,6 +20,46 @@
             darkMode: 'class',
         }
     </script>
+    <style>
+        /* Custom overlay scrollbars */
+        .overlay-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+        }
+        
+        .overlay-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .overlay-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .overlay-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        
+        .overlay-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(156, 163, 175, 0.8);
+        }
+        
+        /* Dark mode scrollbar colors */
+        .dark .overlay-scrollbar {
+            scrollbar-color: rgba(115, 115, 115, 0.5) transparent;
+        }
+        
+        .dark .overlay-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(115, 115, 115, 0.5);
+        }
+        
+        .dark .overlay-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(115, 115, 115, 0.8);
+        }
+    </style>
 </head>
 <body class="bg-neutral-50 dark:bg-neutral-900 min-h-screen transition-colors">
     <!-- Header -->
@@ -27,8 +67,10 @@
         <div class="max-w-4xl mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <svg class="w-8 h-8 mr-3 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
+                    <svg class="w-8 h-8 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m7 11 4.08 10.35a1 1 0 0 0 1.84 0L17 11"/>
+                        <path d="M17 7A5 5 0 0 0 7 7"/>
+                        <path d="M17 7a2 2 0 0 1 0 4H7a2 2 0 0 1 0-4"/>
                     </svg>
                     <div>
                         <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Vanilla AI</h1>
@@ -165,7 +207,7 @@
                                 </div>
                                 
                                 <!-- Dropdown List -->
-                                <div id="modelDropdown" class="hidden absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                <div id="modelDropdown" class="hidden absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-lg max-h-48 overflow-y-auto overlay-scrollbar">
                                     <div id="modelList" class="py-1">
                                         <div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">Loading models...</div>
                                     </div>
@@ -188,7 +230,7 @@
                 </div>
 
                 <!-- Chat Messages -->
-                <div class="flex-1 overflow-y-auto min-h-0" id="chatMessages">
+                <div class="flex-1 overflow-y-auto min-h-0 overlay-scrollbar" id="chatMessages">
                     <div class="p-4">
                         <div class="text-center text-neutral-500 dark:text-neutral-400 text-sm">
                             Start the conversation!
@@ -301,7 +343,7 @@
                 </div>
 
                 <!-- Generated Images -->
-                <div id="imageResults" class="p-4 border-t border-neutral-200 dark:border-neutral-700">
+                <div id="imageResults" class="p-4 border-t border-neutral-200 dark:border-neutral-700 max-h-96 overflow-y-auto overlay-scrollbar">
                     <div class="text-center text-neutral-500 dark:text-neutral-400 text-sm">
                         Generated images will appear here
                     </div>
@@ -400,7 +442,7 @@
                 </div>
 
                 <!-- Generated Audio -->
-                <div id="audioResults" class="p-4 border-t border-neutral-200">
+                <div id="audioResults" class="p-4 border-t border-neutral-200 dark:border-neutral-700 max-h-96 overflow-y-auto overlay-scrollbar">
                     <div class="text-center text-neutral-500 text-sm">
                         Generated audio will appear here
                     </div>
@@ -412,7 +454,16 @@
                 <div class="p-6 space-y-6">
                     <!-- API Key Management -->
                     <div>
-                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">🔑 API Key Management</h3>
+                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1"/>
+                                <path d="M19 15V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V9"/>
+                                <path d="M21 21v-2h-4"/>
+                                <path d="M3 5h4V3"/>
+                                <path d="M7 5a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1V3"/>
+                            </svg>
+                            API Management
+                        </h3>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
@@ -480,7 +531,16 @@
 
                     <!-- Theme Settings -->
                     <div>
-                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">🎨 Appearance</h3>
+                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/>
+                                <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+                                <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+                                <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+                                <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+                            </svg>
+                            Appearance
+                        </h3>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
@@ -492,21 +552,21 @@
                                         id="lightThemeBtn"
                                         class="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-600 transition-colors"
                                     >
-                                        ☀️ Light
+                                        Light
                                     </button>
                                     <button
                                         onclick="setTheme('dark')"
                                         id="darkThemeBtn"
                                         class="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-600 transition-colors"
                                     >
-                                        🌙 Dark
+                                        Dark
                                     </button>
                                     <button
                                         onclick="setTheme('auto')"
                                         id="autoThemeBtn"
                                         class="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-neutral-600 dark:bg-neutral-500 text-white hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors"
                                     >
-                                        🔄 Auto
+                                        Auto
                                     </button>
                                 </div>
                             </div>
@@ -515,7 +575,14 @@
 
                     <!-- App Info -->
                     <div>
-                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">ℹ️ About</h3>
+                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 16v-4"/>
+                                <path d="M12 8h.01"/>
+                            </svg>
+                            About
+                        </h3>
                         <div class="space-y-2 text-sm text-neutral-600 dark:text-neutral-300">
                             <p><strong>Vanilla AI</strong> - Build free, standalone OpenAI SDK</p>
                             <p>Models: Chat, Image Generation, Text-to-Speech</p>
@@ -782,7 +849,7 @@
 
             models.forEach((model, index) => {
                 const modelItem = document.createElement('div');
-                modelItem.className = 'px-3 py-2 text-sm cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors';
+                modelItem.className = 'px-3 py-2 text-sm cursor-pointer text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors';
                 modelItem.textContent = model.id;
                 modelItem.setAttribute('data-model-id', model.id);
                 modelItem.onclick = () => selectModel(model.id);
