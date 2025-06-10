@@ -188,37 +188,14 @@
                 <div class="px-4 py-2 border-b border-neutral-200 dark:border-neutral-700 flex-shrink-0">
                     <div class="flex items-center space-x-3">
                         <div class="flex-1">
-                            <div class="relative">
-                                <!-- Searchable Model Dropdown -->
-                                <div class="relative">
-                                    <input
-                                        type="text"
-                                        id="modelSearch"
-                                        placeholder="Select a model..."
-                                        class="w-full px-3 py-1.5 pr-8 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                                        onclick="openModelDropdown()"
-                                        onkeyup="filterModels()"
-                                        onkeydown="handleSearchKeydown(event)"
-                                        autocomplete="off"
-                                    >
-                                    <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                                
-                                <!-- Dropdown List -->
-                                <div id="modelDropdown" class="hidden absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-lg max-h-48 overflow-y-auto overlay-scrollbar">
-                                    <div id="modelList" class="py-1">
-                                        <div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">Loading models...</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Hidden inputs for compatibility -->
-                                <select id="chatModel" class="hidden">
-                                    <option value="">Loading models...</option>
-                                </select>
-                                <input type="text" id="customModel" class="hidden">
-                            </div>
+                            <!-- Unified Chat Model Dropdown -->
+                            <div id="chatModelDropdown"></div>
+                            
+                            <!-- Hidden inputs for compatibility -->
+                            <select id="chatModel" class="hidden">
+                                <option value="">Loading models...</option>
+                            </select>
+                            <input type="text" id="customModel" class="hidden">
                         </div>
                         <button
                             onclick="clearChat()"
@@ -265,55 +242,36 @@
                 <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
-                            <label for="imageModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Model
                             </label>
-                            <select
-                                id="imageModel"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                                onchange="updateImageSizeOptions()"
-                            >
-                                <option value="gpt-image-1">GPT-Image-1</option>
-                                <option value="dall-e-3">DALL-E 3</option>
-                                <option value="dall-e-2">DALL-E 2</option>
-                            </select>
+                            <div id="imageModelDropdown"></div>
+                            <!-- Hidden select for compatibility -->
+                            <select id="imageModel" class="hidden"></select>
                         </div>
                         <div>
-                            <label for="imageSize" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Size
                             </label>
-                            <select
-                                id="imageSize"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                            >
-                                <option value="1024x1024">1024×1024</option>
-                                <option value="1792x1024">1792×1024</option>
-                                <option value="1024x1792">1024×1792</option>
-                            </select>
+                            <div id="imageSizeDropdown"></div>
+                            <!-- Hidden select for compatibility -->
+                            <select id="imageSize" class="hidden"></select>
                         </div>
                         <div>
-                            <label for="imageQuality" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Quality
                             </label>
-                            <select
-                                id="imageQuality"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                            >
-                                <option value="standard">Standard</option>
-                                <option value="hd">HD</option>
-                            </select>
+                            <div id="imageQualityDropdown"></div>
+                            <!-- Hidden select for compatibility -->
+                            <select id="imageQuality" class="hidden"></select>
                         </div>
                         <div id="responseFormatContainer">
-                            <label for="responseFormat" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Response Format
                             </label>
-                            <select
-                                id="responseFormat"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                            >
-                                <option value="url">URL (60min expiry)</option>
-                                <option value="b64_json">Base64 JSON</option>
-                            </select>
+                            <div id="responseFormatDropdown"></div>
+                            <!-- Hidden select for compatibility -->
+                            <select id="responseFormat" class="hidden"></select>
                         </div>
                     </div>
                 </div>
@@ -356,50 +314,28 @@
                 <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label for="ttsModel" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Model
                             </label>
-                            <select
-                                id="ttsModel"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                            >
-                                <option value="tts-1">TTS-1 (Fast)</option>
-                                <option value="tts-1-hd">TTS-1-HD (High Quality)</option>
-                            </select>
+                            <div id="ttsModelDropdown"></div>
+                            <!-- Hidden select for compatibility -->
+                            <select id="ttsModel" class="hidden"></select>
                         </div>
                         <div>
-                            <label for="ttsVoice" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Voice
                             </label>
-                            <select
-                                id="ttsVoice"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                            >
-                                <option value="alloy">Alloy</option>
-                                <option value="echo">Echo</option>
-                                <option value="fable">Fable</option>
-                                <option value="onyx">Onyx</option>
-                                <option value="nova">Nova</option>
-                                <option value="shimmer">Shimmer</option>
-                            </select>
+                            <div id="ttsVoiceDropdown"></div>
+                            <!-- Hidden select for compatibility -->
+                            <select id="ttsVoice" class="hidden"></select>
                         </div>
                         <div>
-                            <label for="ttsSpeed" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                                 Speed
                             </label>
-                            <select
-                                id="ttsSpeed"
-                                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors"
-                            >
-                                <option value="0.25">0.25x</option>
-                                <option value="0.5">0.5x</option>
-                                <option value="0.75">0.75x</option>
-                                <option value="1.0" selected>1.0x (Normal)</option>
-                                <option value="1.25">1.25x</option>
-                                <option value="1.5">1.5x</option>
-                                <option value="2.0">2.0x</option>
-                                <option value="4.0">4.0x</option>
-                            </select>
+                            <div id="ttsSpeedDropdown"></div>
+                            <!-- Hidden select for compatibility -->
+                            <select id="ttsSpeed" class="hidden"></select>
                         </div>
                     </div>
                 </div>
@@ -626,6 +562,230 @@
         let client = null;
         let messages = [];
         let currentTab = 'chat';
+        
+        // Dropdown instances
+        let chatModelDropdown = null;
+        let imageModelDropdown = null;
+        let imageSizeDropdown = null;
+        let imageQualityDropdown = null;
+        let responseFormatDropdown = null;
+        let ttsModelDropdown = null;
+        let ttsVoiceDropdown = null;
+        let ttsSpeedDropdown = null;
+
+        // Unified Dropdown Component
+        class UnifiedDropdown {
+            constructor(containerId, options = {}) {
+                this.containerId = containerId;
+                this.container = document.getElementById(containerId);
+                this.options = {
+                    searchable: options.searchable || false,
+                    placeholder: options.placeholder || 'Select an option...',
+                    loadingText: options.loadingText || 'Loading...',
+                    noOptionsText: options.noOptionsText || 'No options available',
+                    onSelect: options.onSelect || (() => {}),
+                    onFilter: options.onFilter || null,
+                    className: options.className || ''
+                };
+                
+                this.items = [];
+                this.selectedValue = '';
+                this.selectedText = '';
+                this.isOpen = false;
+                this.filteredItems = [];
+                
+                this.create();
+                this.bindEvents();
+            }
+            
+            create() {
+                const searchableClass = this.options.searchable ? 'searchable' : '';
+                this.container.innerHTML = `
+                    <div class="unified-dropdown relative ${searchableClass} ${this.options.className}">
+                        <div class="dropdown-input-container relative">
+                            ${this.options.searchable ? 
+                                `<input type="text" class="dropdown-input w-full px-3 py-2 pr-8 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors" 
+                                    placeholder="${this.options.placeholder}" autocomplete="off">` :
+                                `<button type="button" class="dropdown-button w-full px-3 py-2 pr-8 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white text-sm transition-colors text-left">
+                                    <span class="dropdown-button-text">${this.options.placeholder}</span>
+                                </button>`
+                            }
+                            <svg class="dropdown-arrow absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="dropdown-list hidden absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-lg max-h-48 overflow-y-auto overlay-scrollbar">
+                            <div class="dropdown-items py-1">
+                                <div class="dropdown-loading px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">${this.options.loadingText}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                this.input = this.container.querySelector('.dropdown-input');
+                this.button = this.container.querySelector('.dropdown-button');
+                this.buttonText = this.container.querySelector('.dropdown-button-text');
+                this.list = this.container.querySelector('.dropdown-list');
+                this.itemsContainer = this.container.querySelector('.dropdown-items');
+                this.arrow = this.container.querySelector('.dropdown-arrow');
+            }
+            
+            bindEvents() {
+                // Handle input/button click
+                const trigger = this.input || this.button;
+                trigger.addEventListener('click', () => this.toggle());
+                
+                if (this.options.searchable && this.input) {
+                    this.input.addEventListener('input', () => this.filter());
+                    this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
+                }
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!this.container.contains(e.target)) {
+                        this.close();
+                    }
+                });
+            }
+            
+            setItems(items) {
+                this.items = items;
+                this.filteredItems = [...items];
+                this.render();
+            }
+            
+            addItem(item) {
+                this.items.push(item);
+                this.filteredItems = [...this.items];
+                this.render();
+            }
+            
+            render() {
+                if (this.items.length === 0) {
+                    this.itemsContainer.innerHTML = `<div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">${this.options.noOptionsText}</div>`;
+                    return;
+                }
+                
+                this.itemsContainer.innerHTML = '';
+                this.filteredItems.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'dropdown-item px-3 py-2 text-sm cursor-pointer text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors';
+                    itemElement.textContent = item.label || item.text || item.id || item;
+                    itemElement.setAttribute('data-value', item.value || item.id || item);
+                    
+                    if (this.selectedValue === (item.value || item.id || item)) {
+                        itemElement.classList.add('bg-neutral-100', 'dark:bg-neutral-600');
+                    }
+                    
+                    itemElement.addEventListener('click', () => this.selectItem(item));
+                    this.itemsContainer.appendChild(itemElement);
+                });
+            }
+            
+            filter() {
+                if (!this.options.searchable) return;
+                
+                const searchTerm = this.input.value.toLowerCase();
+                
+                if (this.options.onFilter) {
+                    this.options.onFilter(searchTerm);
+                } else {
+                    this.filteredItems = this.items.filter(item => {
+                        const text = item.label || item.text || item.id || item;
+                        return text.toLowerCase().includes(searchTerm);
+                    });
+                }
+                
+                this.render();
+            }
+            
+            selectItem(item) {
+                const value = item.value || item.id || item;
+                const text = item.label || item.text || item.id || item;
+                
+                this.selectedValue = value;
+                this.selectedText = text;
+                
+                if (this.options.searchable && this.input) {
+                    this.input.value = text;
+                } else if (this.buttonText) {
+                    this.buttonText.textContent = text;
+                }
+                
+                this.close();
+                this.options.onSelect(value, item);
+                this.render(); // Re-render to update selection highlighting
+            }
+            
+            setValue(value) {
+                const item = this.items.find(item => (item.value || item.id || item) === value);
+                if (item) {
+                    this.selectItem(item);
+                }
+            }
+            
+            getValue() {
+                return this.selectedValue;
+            }
+            
+            getText() {
+                return this.selectedText;
+            }
+            
+            open() {
+                this.isOpen = true;
+                this.list.classList.remove('hidden');
+                this.arrow.style.transform = 'translateY(-50%) rotate(180deg)';
+                
+                if (this.options.searchable && this.input) {
+                    // Clear search to show all options
+                    if (this.input.value === this.selectedText) {
+                        this.input.value = '';
+                        this.filter();
+                    }
+                    this.input.focus();
+                }
+            }
+            
+            close() {
+                this.isOpen = false;
+                this.list.classList.add('hidden');
+                this.arrow.style.transform = 'translateY(-50%) rotate(0deg)';
+                
+                if (this.options.searchable && this.input) {
+                    // Restore selected value
+                    this.input.value = this.selectedText || '';
+                }
+            }
+            
+            toggle() {
+                if (this.isOpen) {
+                    this.close();
+                } else {
+                    this.open();
+                }
+            }
+            
+            handleKeydown(event) {
+                if (event.key === 'Escape') {
+                    this.close();
+                } else if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const firstItem = this.itemsContainer.querySelector('.dropdown-item');
+                    if (firstItem) {
+                        const value = firstItem.getAttribute('data-value');
+                        const item = this.filteredItems.find(item => (item.value || item.id || item) === value);
+                        if (item) this.selectItem(item);
+                    }
+                }
+            }
+            
+            setLoading(loading = true) {
+                if (loading) {
+                    this.itemsContainer.innerHTML = `<div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">${this.options.loadingText}</div>`;
+                }
+            }
+        }
 
         // Theme and localStorage management
         function initializeTheme() {
@@ -658,19 +818,17 @@
         }
 
         function updateThemeButtons(currentTheme) {
-            const buttons = ['lightThemeBtn', 'darkThemeBtn', 'autoThemeBtn'];
-            const themes = ['light', 'dark', 'auto'];
+            const lightBtn = document.getElementById('lightThemeBtn');
+            const darkBtn = document.getElementById('darkThemeBtn');
+            const autoBtn = document.getElementById('autoThemeBtn');
 
-            buttons.forEach((btnId, index) => {
-                const btn = document.getElementById(btnId);
-                if (btn) {
-                    if (themes[index] === currentTheme) {
-                        btn.className = btn.className.replace(/bg-white|bg-neutral-700/, 'bg-blue-600').replace(/dark:bg-neutral-700|dark:bg-blue-500/, 'dark:bg-blue-500').replace(/text-neutral-700|text-neutral-300/, 'text-white');
-                    } else {
-                        btn.className = btn.className.replace(/bg-blue-600|dark:bg-blue-500/, 'bg-white dark:bg-neutral-700').replace(/text-white/, 'text-neutral-700 dark:text-neutral-300');
-                    }
-                }
-            });
+            // Reset all buttons to inactive state
+            const inactiveClass = 'flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-600 transition-colors';
+            const activeClass = 'flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md text-sm font-medium bg-neutral-600 dark:bg-neutral-500 text-white hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors';
+
+            if (lightBtn) lightBtn.className = currentTheme === 'light' ? activeClass : inactiveClass;
+            if (darkBtn) darkBtn.className = currentTheme === 'dark' ? activeClass : inactiveClass;
+            if (autoBtn) autoBtn.className = currentTheme === 'auto' ? activeClass : inactiveClass;
         }
 
         window.toggleDarkMode = function() {
@@ -867,120 +1025,145 @@
             }
         }
 
-        // New searchable dropdown functions
-        let allModels = [];
-        let selectedModel = '';
-        let isDropdownOpen = false;
-
-        window.openModelDropdown = function() {
-            const dropdown = document.getElementById('modelDropdown');
-            const searchInput = document.getElementById('modelSearch');
-            
-            dropdown.classList.remove('hidden');
-            isDropdownOpen = true;
-            
-            // If there's a selected model, show it but allow filtering
-            if (selectedModel && searchInput.value === selectedModel) {
-                searchInput.value = '';
-                filterModels();
-            }
-            
-            searchInput.focus();
-        }
-
-        window.filterModels = function() {
-            const searchInput = document.getElementById('modelSearch');
-            const searchTerm = searchInput.value.toLowerCase();
-
-            if (searchTerm === '') {
-                displayModels(allModels);
-            } else {
-                const filtered = allModels.filter(model => 
-                    model.id.toLowerCase().includes(searchTerm)
-                );
-                displayModels(filtered);
-            }
-        }
-
-        window.handleSearchKeydown = function(event) {
-            if (event.key === 'Escape') {
-                closeDropdown();
-            } else if (event.key === 'Enter') {
-                event.preventDefault();
-                // Select first filtered result if any
-                const modelList = document.getElementById('modelList');
-                const firstModel = modelList.querySelector('[data-model-id]');
-                if (firstModel) {
-                    selectModel(firstModel.getAttribute('data-model-id'));
-                }
-            }
-        }
-
-        function closeDropdown() {
-            const dropdown = document.getElementById('modelDropdown');
-            const searchInput = document.getElementById('modelSearch');
-            
-            dropdown.classList.add('hidden');
-            isDropdownOpen = false;
-            
-            // Restore selected model or clear if none selected
-            if (selectedModel) {
-                searchInput.value = selectedModel;
-            } else {
-                searchInput.value = '';
-                searchInput.placeholder = 'Select a model...';
-            }
-        }
-
-        function displayModels(models) {
-            const modelList = document.getElementById('modelList');
-            modelList.innerHTML = '';
-
-            if (models.length === 0) {
-                modelList.innerHTML = '<div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">No models found</div>';
-                return;
-            }
-
-            models.forEach((model, index) => {
-                const modelItem = document.createElement('div');
-                modelItem.className = 'px-3 py-2 text-sm cursor-pointer text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors';
-                modelItem.textContent = model.id;
-                modelItem.setAttribute('data-model-id', model.id);
-                modelItem.onclick = () => selectModel(model.id);
-                
-                // Highlight selected model
-                if (model.id === selectedModel) {
-                    modelItem.classList.add('bg-neutral-100', 'dark:bg-neutral-600');
-                }
-                
-                modelList.appendChild(modelItem);
+        // Initialize dropdown instances
+        function initializeDropdowns() {
+            // Chat Model Dropdown (searchable)
+            chatModelDropdown = new UnifiedDropdown('chatModelDropdown', {
+                searchable: true,
+                placeholder: 'Select a model...',
+                loadingText: 'Loading models...',
+                noOptionsText: 'No models found',
+                onSelect: (value, item) => {
+                    // Update hidden select for compatibility
+                    document.getElementById('chatModel').value = value;
+                    console.log('Selected model:', value);
+                },
+                onFilter: null // Use default filtering
             });
-        }
-
-        function selectModel(modelId) {
-            selectedModel = modelId;
-            document.getElementById('modelSearch').value = modelId;
-            document.getElementById('chatModel').value = modelId;
-            closeDropdown();
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('modelDropdown');
-            const searchInput = document.getElementById('modelSearch');
             
-            if (!dropdown.contains(event.target) && !searchInput.contains(event.target)) {
-                closeDropdown();
-            }
-        });
+            // Image Model Dropdown
+            imageModelDropdown = new UnifiedDropdown('imageModelDropdown', {
+                searchable: false,
+                placeholder: 'Select model...',
+                onSelect: (value, item) => {
+                    document.getElementById('imageModel').value = value;
+                    updateImageSizeOptions();
+                }
+            });
+            
+            // Image Size Dropdown
+            imageSizeDropdown = new UnifiedDropdown('imageSizeDropdown', {
+                searchable: false,
+                placeholder: 'Select size...',
+                onSelect: (value, item) => {
+                    document.getElementById('imageSize').value = value;
+                }
+            });
+            
+            // Image Quality Dropdown
+            imageQualityDropdown = new UnifiedDropdown('imageQualityDropdown', {
+                searchable: false,
+                placeholder: 'Select quality...',
+                onSelect: (value, item) => {
+                    document.getElementById('imageQuality').value = value;
+                }
+            });
+            
+            // Response Format Dropdown
+            responseFormatDropdown = new UnifiedDropdown('responseFormatDropdown', {
+                searchable: false,
+                placeholder: 'Select format...',
+                onSelect: (value, item) => {
+                    document.getElementById('responseFormat').value = value;
+                }
+            });
+            
+            // TTS Model Dropdown
+            ttsModelDropdown = new UnifiedDropdown('ttsModelDropdown', {
+                searchable: false,
+                placeholder: 'Select model...',
+                onSelect: (value, item) => {
+                    document.getElementById('ttsModel').value = value;
+                }
+            });
+            
+            // TTS Voice Dropdown
+            ttsVoiceDropdown = new UnifiedDropdown('ttsVoiceDropdown', {
+                searchable: false,
+                placeholder: 'Select voice...',
+                onSelect: (value, item) => {
+                    document.getElementById('ttsVoice').value = value;
+                }
+            });
+            
+            // TTS Speed Dropdown
+            ttsSpeedDropdown = new UnifiedDropdown('ttsSpeedDropdown', {
+                searchable: false,
+                placeholder: 'Select speed...',
+                onSelect: (value, item) => {
+                    document.getElementById('ttsSpeed').value = value;
+                }
+            });
+            
+            // Initialize image and TTS dropdowns with default options
+            initializeImageDropdowns();
+            initializeTTSDropdowns();
+        }
+        
+        function initializeImageDropdowns() {
+            // Set initial image model options
+            const imageModels = [
+                { value: 'gpt-image-1', label: 'GPT-Image-1' },
+                { value: 'dall-e-3', label: 'DALL-E 3' },
+                { value: 'dall-e-2', label: 'DALL-E 2' }
+            ];
+            imageModelDropdown.setItems(imageModels);
+            imageModelDropdown.setValue('gpt-image-1');
+            
+            // Trigger initial size options update
+            updateImageSizeOptions();
+        }
+        
+        function initializeTTSDropdowns() {
+            // Set TTS model options
+            const ttsModels = [
+                { value: 'tts-1', label: 'TTS-1 (Fast)' },
+                { value: 'tts-1-hd', label: 'TTS-1-HD (High Quality)' }
+            ];
+            ttsModelDropdown.setItems(ttsModels);
+            ttsModelDropdown.setValue('tts-1');
+            
+            // Set TTS voice options
+            const ttsVoices = [
+                { value: 'alloy', label: 'Alloy' },
+                { value: 'echo', label: 'Echo' },
+                { value: 'fable', label: 'Fable' },
+                { value: 'onyx', label: 'Onyx' },
+                { value: 'nova', label: 'Nova' },
+                { value: 'shimmer', label: 'Shimmer' }
+            ];
+            ttsVoiceDropdown.setItems(ttsVoices);
+            ttsVoiceDropdown.setValue('alloy');
+            
+            // Set TTS speed options
+            const ttsSpeeds = [
+                { value: '0.25', label: '0.25x' },
+                { value: '0.5', label: '0.5x' },
+                { value: '0.75', label: '0.75x' },
+                { value: '1.0', label: '1.0x (Normal)' },
+                { value: '1.25', label: '1.25x' },
+                { value: '1.5', label: '1.5x' },
+                { value: '2.0', label: '2.0x' },
+                { value: '4.0', label: '4.0x' }
+            ];
+            ttsSpeedDropdown.setItems(ttsSpeeds);
+            ttsSpeedDropdown.setValue('1.0');
+        }
 
         async function loadAvailableModels() {
-            if (!client) return;
+            if (!client || !chatModelDropdown) return;
             
-            const modelList = document.getElementById('modelList');
-            const modelSearch = document.getElementById('modelSearch');
-            modelList.innerHTML = '<div class="px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400">Loading models...</div>';
-            modelSearch.placeholder = 'Loading models...';
+            chatModelDropdown.setLoading(true);
             
             try {
                 console.log('🔍 Fetching available models...');
@@ -1005,18 +1188,15 @@
                             return 5;
                         };
                         return priority(a.id) - priority(b.id) || a.id.localeCompare(b.id);
-                    });
+                    })
+                    .map(model => ({ id: model.id, label: model.id })); // Convert to dropdown format
                 
-                // Store models globally for filtering
-                allModels = sortedModels;
+                // Set models in dropdown
+                chatModelDropdown.setItems(sortedModels);
                 
-                // Display models in dropdown
-                displayModels(sortedModels);
-                
-                // Update placeholder and select first model
+                // Select first model by default
                 if (sortedModels.length > 0) {
-                    modelSearch.placeholder = 'Select a model...';
-                    selectModel(sortedModels[0].id);
+                    chatModelDropdown.setValue(sortedModels[0].id);
                     console.log('🎯 Default model selected:', sortedModels[0].id);
                 }
                 
@@ -1031,28 +1211,26 @@
                 
                 if (isNebius) {
                     fallbackModels = [
-                        { id: 'deepseek-ai/DeepSeek-R1' },
-                        { id: 'deepseek-ai/DeepSeek-V3' },
-                        { id: 'meta-llama/Meta-Llama-3.1-70B-Instruct' }
+                        { id: 'deepseek-ai/DeepSeek-R1', label: 'deepseek-ai/DeepSeek-R1' },
+                        { id: 'deepseek-ai/DeepSeek-V3', label: 'deepseek-ai/DeepSeek-V3' },
+                        { id: 'meta-llama/Meta-Llama-3.1-70B-Instruct', label: 'meta-llama/Meta-Llama-3.1-70B-Instruct' }
                     ];
                 } else if (isLocal) {
                     fallbackModels = [
-                        { id: 'llama3.2' },
-                        { id: 'mistral' }
+                        { id: 'llama3.2', label: 'llama3.2' },
+                        { id: 'mistral', label: 'mistral' }
                     ];
                 } else {
                     fallbackModels = [
-                        { id: 'gpt-4o-mini' },
-                        { id: 'gpt-3.5-turbo' }
+                        { id: 'gpt-4o-mini', label: 'gpt-4o-mini' },
+                        { id: 'gpt-3.5-turbo', label: 'gpt-3.5-turbo' }
                     ];
                 }
                 
-                allModels = fallbackModels;
-                displayModels(fallbackModels);
-                modelSearch.placeholder = 'Select a model...';
+                chatModelDropdown.setItems(fallbackModels);
                 
                 if (fallbackModels.length > 0) {
-                    selectModel(fallbackModels[0].id);
+                    chatModelDropdown.setValue(fallbackModels[0].id);
                 }
                 
                 console.warn('⚠️ Could not load models from API. Using provider-specific fallback options.');
@@ -1247,8 +1425,8 @@
                 // Add user message to conversation
                 messages.push({ role: 'user', content: message });
 
-                // Get model from new searchable dropdown
-                const model = selectedModel || document.getElementById('modelSearch').value.trim();
+                // Get model from unified dropdown
+                const model = chatModelDropdown?.getValue();
                 
                 if (!model) {
                     alert('Please select a model');
@@ -1364,10 +1542,10 @@
                 return;
             }
 
-            const model = document.getElementById('imageModel').value;
-            const size = document.getElementById('imageSize').value;
-            const quality = document.getElementById('imageQuality').value;
-            const responseFormat = document.getElementById('responseFormat').value;
+            const model = imageModelDropdown?.getValue() || 'dall-e-3';
+            const size = imageSizeDropdown?.getValue() || '1024x1024';
+            const quality = imageQualityDropdown?.getValue() || 'standard';
+            const responseFormat = responseFormatDropdown?.getValue() || 'url';
 
             // Show loading status
             showStatus('Generating image...');
@@ -1504,9 +1682,9 @@
                 return;
             }
 
-            const model = document.getElementById('ttsModel').value;
-            const voice = document.getElementById('ttsVoice').value;
-            const speed = parseFloat(document.getElementById('ttsSpeed').value);
+            const model = ttsModelDropdown?.getValue() || 'tts-1';
+            const voice = ttsVoiceDropdown?.getValue() || 'alloy';
+            const speed = parseFloat(ttsSpeedDropdown?.getValue() || '1.0');
 
             // Show loading status
             showStatus('Generating speech...');
@@ -1540,8 +1718,8 @@
         }
 
         window.previewVoice = async function() {
-            const voice = document.getElementById('ttsVoice').value;
-            const speed = parseFloat(document.getElementById('ttsSpeed').value);
+            const voice = ttsVoiceDropdown?.getValue() || 'alloy';
+            const speed = parseFloat(ttsSpeedDropdown?.getValue() || '1.0');
 
             // Sample text for voice preview
             const previewTexts = {
@@ -1602,28 +1780,28 @@
             }
 
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'mb-6 p-4 border border-neutral-200 rounded-lg';
+            resultDiv.className = 'mb-6 p-4 border border-neutral-200 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 transition-colors';
 
             const timestamp = new Date().toLocaleString();
 
             resultDiv.innerHTML = `
                 <div class="mb-3">
-                    <h4 class="font-medium text-neutral-900 mb-2">Generated Audio</h4>
-                    <p class="text-sm text-neutral-600 mb-1"><strong>Text:</strong> ${escapeHtml(text.substring(0, 100))}${text.length > 100 ? '...' : ''}</p>
-                    <p class="text-sm text-neutral-600 mb-1"><strong>Settings:</strong> ${model}, ${voice}, ${speed}x speed</p>
-                    <p class="text-sm text-neutral-500"><strong>Generated:</strong> ${timestamp}</p>
+                    <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Generated Audio</h4>
+                    <p class="text-sm text-neutral-600 dark:text-neutral-300 mb-1"><strong>Text:</strong> ${escapeHtml(text.substring(0, 100))}${text.length > 100 ? '...' : ''}</p>
+                    <p class="text-sm text-neutral-600 dark:text-neutral-300 mb-1"><strong>Settings:</strong> ${model}, ${voice}, ${speed}x speed</p>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400"><strong>Generated:</strong> ${timestamp}</p>
                 </div>
-                <div class="bg-neutral-50 rounded-lg p-3 mb-3">
+                <div class="bg-neutral-50 dark:bg-neutral-600 rounded-lg p-3 mb-3">
                     <audio controls class="w-full">
                         <source src="${audioUrl}" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
                 <div class="flex justify-center space-x-2">
-                    <a href="${audioUrl}" download="speech-${Date.now()}.mp3" class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                    <a href="${audioUrl}" download="speech-${Date.now()}.mp3" class="px-3 py-1 bg-green-600 dark:bg-green-500 text-white text-sm rounded hover:bg-green-700 dark:hover:bg-green-600 transition-colors">
                         Download
                     </a>
-                    <button onclick="this.parentElement.parentElement.remove(); URL.revokeObjectURL('${audioUrl}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                    <button onclick="this.parentElement.parentElement.remove(); URL.revokeObjectURL('${audioUrl}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
                         Delete
                     </button>
                 </div>
@@ -1637,10 +1815,10 @@
             const audioResults = document.getElementById('audioResults');
 
             const errorDiv = document.createElement('div');
-            errorDiv.className = 'mb-4 p-3 bg-red-100 border border-red-300 rounded-lg';
+            errorDiv.className = 'mb-4 p-3 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-lg';
             errorDiv.innerHTML = `
-                <div class="text-red-800 text-sm">${escapeHtml(errorMessage)}</div>
-                <button onclick="this.parentElement.remove()" class="mt-2 text-xs text-red-600 hover:text-red-800">
+                <div class="text-red-800 dark:text-red-200 text-sm">${escapeHtml(errorMessage)}</div>
+                <button onclick="this.parentElement.remove()" class="mt-2 text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200 transition-colors">
                     Dismiss
                 </button>
             `;
@@ -1664,16 +1842,12 @@
         });
 
         function updateImageSizeOptions() {
-            const model = document.getElementById('imageModel').value;
-            const sizeSelect = document.getElementById('imageSize');
-            const qualitySelect = document.getElementById('imageQuality');
-            const responseFormatSelect = document.getElementById('responseFormat');
-            const responseFormatContainer = document.getElementById('responseFormatContainer');
-
-            // Clear existing options
-            sizeSelect.innerHTML = '';
-            qualitySelect.innerHTML = '';
-            responseFormatSelect.innerHTML = '';
+            // Don't proceed if dropdowns aren't initialized yet
+            if (!imageModelDropdown || !imageSizeDropdown || !imageQualityDropdown || !responseFormatDropdown) {
+                return;
+            }
+            
+            const model = imageModelDropdown.getValue() || 'dall-e-3';
 
             // Define size options for each model
             const sizeOptions = {
@@ -1727,54 +1901,39 @@
                 ]
             };
 
-            // Add size options for selected model
+            // Update dropdowns
             const sizes = sizeOptions[model] || sizeOptions['dall-e-3'];
-            sizes.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.label;
-                sizeSelect.appendChild(optionElement);
-            });
+            imageSizeDropdown.setItems(sizes);
+            imageSizeDropdown.setValue(sizes[0].value);
 
-            // Add quality options for selected model
             const qualities = qualityOptions[model] || [];
-            qualities.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.label;
-                qualitySelect.appendChild(optionElement);
-            });
+            imageQualityDropdown.setItems(qualities);
+            if (qualities.length > 0) {
+                imageQualityDropdown.setValue(qualities[0].value);
+            }
 
-            // Add response format options for selected model
             const responseFormats = responseFormatOptions[model] || responseFormatOptions['dall-e-3'];
-            responseFormats.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.label;
-                responseFormatSelect.appendChild(optionElement);
-            });
+            responseFormatDropdown.setItems(responseFormats);
+            responseFormatDropdown.setValue(responseFormats[0].value);
 
-            // Handle visibility for different models
-            qualitySelect.style.display = 'block';
-            qualitySelect.parentElement.style.display = 'block';
-
-            // Response format is available for all models
-            responseFormatContainer.style.display = 'block';
-
-            // For GPT-Image-1, disable response format since it's always b64_json
+            // Handle special cases for GPT-Image-1
             if (model === 'gpt-image-1') {
-                responseFormatSelect.disabled = true;
-                responseFormatSelect.title = 'GPT-Image-1 always returns Base64 format';
+                // Disable response format dropdown since it's always b64_json
+                responseFormatDropdown.container.style.opacity = '0.5';
+                responseFormatDropdown.container.style.pointerEvents = 'none';
+                responseFormatDropdown.container.title = 'GPT-Image-1 always returns Base64 format';
             } else {
-                responseFormatSelect.disabled = false;
-                responseFormatSelect.title = '';
+                responseFormatDropdown.container.style.opacity = '1';
+                responseFormatDropdown.container.style.pointerEvents = 'auto';
+                responseFormatDropdown.container.title = '';
             }
         }
 
         // Initialize image size options on page load
         document.addEventListener('DOMContentLoaded', function() {
-            updateImageSizeOptions();
             initializeTheme();
+            initializeDropdowns();
+            // updateImageSizeOptions() is now called from initializeImageDropdowns()
 
             // Load saved API key and base URL if available
             const savedKey = loadApiKey();
