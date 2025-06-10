@@ -9,17 +9,29 @@ Refine the UI in `../standalone-bundle/index.html`
 
 ## Refinements
 
-1. Dark Mode
-
-- text inside dropdowns still has wrong colors
-
 3. Settings Screen
 
-- The settings screen is very noisy
-- We need to refine it, simplify it and avoid redundant fields
-- Fix alignment issues
+Do the following:
 
-4. Scrollbars
+```
+## API
+// make all the fields similar in design
 
-- All Scrollbars should scroll above content and not take up extra space causing
-  layout janks
+Key
+[Key                        (Revoke|Set)] // a single component will manage the states: unset & set
+
+Base URL
+[Base URL                   (Revoke|Set)]
+Add small pill buttons with some defaults: `openai`, `nebius`, `openrouter`
+
+## Apperance
+<as its there now>
+
+## About
+
+<write a nice paragraph than the current clumsy about>
+```
+
+4. Dropdowns
+
+Can we make all dropdowns use the same component in chat?
