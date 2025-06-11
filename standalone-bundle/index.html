@@ -1780,30 +1780,61 @@
             }
 
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'mb-6 p-4 border border-neutral-200 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-700 transition-colors';
+            resultDiv.className = 'mb-6 p-6 border border-neutral-200 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-all duration-200';
 
             const timestamp = new Date().toLocaleString();
 
             resultDiv.innerHTML = `
-                <div class="mb-3">
-                    <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Generated Audio</h4>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-300 mb-1"><strong>Text:</strong> ${escapeHtml(text.substring(0, 100))}${text.length > 100 ? '...' : ''}</p>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-300 mb-1"><strong>Settings:</strong> ${model}, ${voice}, ${speed}x speed</p>
-                    <p class="text-sm text-neutral-500 dark:text-neutral-400"><strong>Generated:</strong> ${timestamp}</p>
+                <!-- Header with clean title and timestamp -->
+                <div class="flex items-start justify-between mb-4">
+                    <h4 class="text-lg font-semibold text-neutral-900 dark:text-white">Audio Generated</h4>
+                    <time class="text-xs text-neutral-500 dark:text-neutral-400 font-mono bg-neutral-100 dark:bg-neutral-600 px-2 py-1 rounded-md">
+                        ${timestamp}
+                    </time>
                 </div>
-                <div class="bg-neutral-50 dark:bg-neutral-600 rounded-lg p-3 mb-3">
+
+                <!-- Text content with elegant presentation -->
+                <div class="mb-4">
+                    <div class="text-neutral-700 dark:text-neutral-200 leading-relaxed border-l-2 border-neutral-300 dark:border-neutral-600 pl-4 py-2 bg-neutral-50/50 dark:bg-neutral-700/50 rounded-r-md">
+                        <span class="font-medium">"</span>${escapeHtml(text.substring(0, 120))}${text.length > 120 ? '…' : ''}<span class="font-medium">"</span>
+                    </div>
+                </div>
+
+                <!-- Technical specs with minimal design -->
+                <div class="flex flex-wrap gap-2 mb-4 text-xs">
+                    <span class="px-2 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-md font-medium">
+                        ${model.toUpperCase()}
+                    </span>
+                    <span class="px-2 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-md">
+                        ${voice.charAt(0).toUpperCase() + voice.slice(1)} voice
+                    </span>
+                    <span class="px-2 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-md">
+                        ${speed}× speed
+                    </span>
+                </div>
+
+                <!-- Audio player with clean styling -->
+                <div class="bg-neutral-50 dark:bg-neutral-700 rounded-lg p-3 mb-4 border border-neutral-200 dark:border-neutral-600">
                     <audio controls class="w-full">
                         <source src="${audioUrl}" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
-                <div class="flex justify-center space-x-2">
-                    <a href="${audioUrl}" download="speech-${Date.now()}.mp3" class="px-3 py-1 bg-green-600 dark:bg-green-500 text-white text-sm rounded hover:bg-green-700 dark:hover:bg-green-600 transition-colors">
-                        Download
-                    </a>
-                    <button onclick="this.parentElement.parentElement.remove(); URL.revokeObjectURL('${audioUrl}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
-                        Delete
+
+                <!-- Action buttons with neutral styling -->
+                <div class="flex justify-end space-x-3">
+                    <button onclick="this.parentElement.parentElement.remove(); URL.revokeObjectURL('${audioUrl}')" class="inline-flex items-center space-x-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <span>Remove</span>
                     </button>
+                    <a href="${audioUrl}" download="speech-${Date.now()}.mp3" class="inline-flex items-center space-x-2 px-4 py-2 bg-neutral-600 dark:bg-neutral-500 text-white text-sm font-medium rounded-md hover:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>Download MP3</span>
+                    </a>
                 </div>
             `;
 
