@@ -3,6 +3,54 @@
 This creates a single-file JavaScript bundle of the OpenAI SDK for zero-build
 web development.
 
+## 🟢 Release Log
+
+The pipeline is verified working at the version on top. Each new bundle release
+appends a line here — a single glance shows the repo is fresh and the build
+hasn't drifted into a stale state.
+
+| Date       | Version  | Notes                          |
+| ---------- | -------- | ------------------------------ |
+| 2026-04-26 | v6.34.0  | Pipeline refresh, no code drift |
+| 2026-04-17 | v6.34.0  | Bumped from v5.2.0             |
+
+## 🔄 Refresh Workflow
+
+Run this whenever upstream `openai/openai-node` cuts a new release, or whenever
+you want to prove the pipeline still works.
+
+```bash
+cd ~/Projects/openai-node
+
+# 1. Get the new tag from upstream (one-time: add upstream remote)
+# git remote add upstream https://github.com/openai/openai-node.git
+git fetch upstream --tags
+
+# 2. Build the SDK at that tag (detached HEAD is expected here)
+git checkout v<X.Y.Z>
+git checkout master -- standalone-bundle    # bundle dir lives only on the fork
+npm install && npm run build
+
+# 3. Build + deploy the standalone bundle
+cd standalone-bundle
+npm install && npm run build
+node deploy.js --force                       # commits to ~/Projects/cdn/
+
+# 4. Push CDN
+cd ~/Projects/cdn && git push
+
+# 5. Back on master, append a row to the Release Log above and commit
+cd ~/Projects/openai-node && git checkout master
+# (edit standalone-bundle/README.md, add the new row)
+git add standalone-bundle/README.md
+git commit -m "release log: openai-sdk v<X.Y.Z>"
+git push
+```
+
+The Release Log commit is intentionally tiny — it touches no code, only this
+README — so the master branch's history reads as a clean ledger of pipeline
+runs.
+
 ## 🎯 Purpose
 
 - **Zero-build development**: Use OpenAI SDK directly in HTML without any build
